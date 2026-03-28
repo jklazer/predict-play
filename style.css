@@ -379,6 +379,33 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
     color: var(--text-bright);
     text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
 }
+/* Event feed in match viz */
+.event-feed {
+    width: 100%;
+    max-height: 60px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 16px;
+    z-index: 1;
+}
+.feed-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    animation: fadeIn 0.4s ease;
+}
+.feed-item.goal { color: var(--gold); font-weight: 600; }
+.feed-min {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    min-width: 28px;
+}
+
 .demo-event-flash {
     position: absolute;
     inset: 0;
