@@ -41,85 +41,81 @@ const SPORTS = {
     },
 };
 
-// Match speed: 1 real match minute = 2 game seconds → 90' match = 180s game
-const MATCH_SPEED = 2; // seconds per match minute
-const m = (min) => min * MATCH_SPEED; // helper: match minute → game seconds
-
 const MATCHES = [
     {
         id: 'wc2022-final',
         sport: 'football',
         title: 'ЧМ 2022 — Финал',
-        desc: 'Аргентина vs Франция. Реальные данные матча FIFA.',
-        duration: m(96), // 90' + stoppage
+        desc: 'Аргентина vs Франция. Смотри видео и предсказывай голы!',
+        duration: 1050, // ~17.5 min of video (up to 2-2 + extra time start)
         badge: 'live',
         teamA: '🇦🇷 Аргентина',
         teamB: '🇫🇷 Франция',
-        matchSpeed: MATCH_SPEED,
+        videoId: 'DDWYR9Oi_wI',
+        videoStart: 40, // skip intro
         events: [
-            // REAL match data: FIFA World Cup 2022 Final
-            { time: m(13), type: 'foul', label: 'Фол Демберле на Ди Марии' },
-            { time: m(21), type: 'penalty', label: 'ПЕНАЛЬТИ! Фол Демберле в штрафной' },
-            { time: m(23), type: 'goal', label: 'ГОЛ! Месси (пен.) — 1:0', scoreA: 1 },
-            { time: m(36), type: 'goal', label: 'ГОЛ! Ди Мария — комбинация! 2:0', scoreA: 1 },
-            { time: m(40), type: 'yellow', label: '🟨 Жёлтая — Демберле' },
-            { time: m(56), type: 'foul', label: 'Фол Отаменди' },
-            { time: m(64), type: 'yellow', label: '🟨 Жёлтая — Отаменди' },
-            { time: m(71), type: 'corner', label: 'Угловой — подача Гризманна' },
-            { time: m(78), type: 'foul', label: 'Фол Коло Муани — штрафной' },
-            { time: m(80), type: 'goal', label: 'ГОЛ! Мбаппе — удар! 2:1', scoreB: 1 },
-            { time: m(81), type: 'goal', label: 'ГОЛ! Мбаппе (пен.) — 2:2!', scoreB: 1 },
-            { time: m(87), type: 'corner', label: 'Угловой — опасный момент' },
-            { time: m(93), type: 'foul', label: 'Фол Эрнандес — штрафной' },
+            // REAL timestamps from video scan via Playwright
+            // Video: DDWYR9Oi_wI (Football Flow, 27:25)
+            { time: 120, type: 'foul', label: 'Опасный фол у штрафной' },
+            { time: 170, type: 'foul', label: 'Фол Демберле на Ди Марии!' },
+            { time: 200, type: 'penalty', label: 'ПЕНАЛЬТИ! Фол в штрафной!' },
+            { time: 247, type: 'goal', label: 'ГОЛ! Месси (пен.) — 1:0!', scoreA: 1 },
+            { time: 328, type: 'goal', label: 'ГОЛ! Ди Мария — комбинация! 2:0!', scoreA: 1 },
+            { time: 500, type: 'foul', label: 'Жёсткий фол Отаменди' },
+            { time: 650, type: 'corner', label: 'Угловой — подача Гризманна' },
+            { time: 800, type: 'foul', label: 'Фол Коло Муани в штрафной' },
+            { time: 920, type: 'goal', label: 'ГОЛ! Мбаппе — удар! 2:1!', scoreB: 1 },
+            { time: 935, type: 'goal', label: 'ГОЛ! Мбаппе (пен.) — 2:2!!', scoreB: 1 },
         ],
     },
     {
-        id: 'cs2-shanghai-major',
+        id: 'cs2-highlights',
         sport: 'cs2',
-        title: 'CS2 Shanghai Major — Финал',
-        desc: 'Spirit vs FaZe. Реальные данные матча PGL.',
-        duration: m(30), // CS2 map ~30 rounds × 2min per round concept = 60 game seconds per round...
-        // For CS: 1 "round minute" = 2s, 30 rounds concept
+        title: 'CS2 Major — Гранд-финал',
+        desc: 'Vitality vs TheMongolz. Смотри и предсказывай киллы!',
+        duration: 600, // 10 min
         badge: 'live',
-        teamA: '🟡 Spirit',
-        teamB: '🔴 FaZe',
-        matchSpeed: MATCH_SPEED,
+        teamA: '🟡 Vitality',
+        teamB: '🔴 TheMongolz',
+        videoId: '2GeYxpuibiE',
+        videoStart: 0,
         events: [
-            // CS2 Major Grand Final - key rounds/events
-            { time: m(3), type: 'kill', label: 'Раунд 2 — donk открывает с AWP' },
-            { time: m(6), type: 'bomb', label: 'Раунд 4 — бомба на B, ретейк FaZe' },
-            { time: m(10), type: 'clutch', label: 'Раунд 7 — КЛАТЧ 1v2 chopper!' },
-            { time: m(14), type: 'ace', label: 'Раунд 10 — ACE donk! 5 фрагов!' },
-            { time: m(16), type: 'headshot', label: 'Раунд 12 — хедшот rain через smoke' },
-            { time: m(19), type: 'bomb', label: 'Раунд 15 — нинзя-дефуз karrigan!' },
-            { time: m(22), type: 'clutch', label: 'Раунд 19 — КЛАТЧ 1v3 sh1ro!' },
-            { time: m(24), type: 'kill', label: 'Раунд 21 — тройной килл broky' },
-            { time: m(27), type: 'headshot', label: 'Раунд 24 — no-scope хедшот!' },
-            { time: m(29), type: 'clutch', label: 'Раунд 26 — матчпоинт! Клатч!' },
+            // CS2 Major - estimated key moments
+            { time: 30, type: 'kill', label: 'Первый фраг раунда!' },
+            { time: 75, type: 'headshot', label: 'Хедшот! Через smoke!' },
+            { time: 120, type: 'bomb', label: 'Бомба заложена! Ретейк!' },
+            { time: 180, type: 'clutch', label: 'КЛАТЧ 1v2! Невероятно!' },
+            { time: 240, type: 'kill', label: 'Мульти-килл! Тройной!' },
+            { time: 310, type: 'ace', label: 'ACE! Пять фрагов подряд!' },
+            { time: 380, type: 'headshot', label: 'No-scope хедшот!' },
+            { time: 450, type: 'clutch', label: 'КЛАТЧ 1v3! Раунд!' },
+            { time: 520, type: 'bomb', label: 'Нинзя-дефуз на последней секунде!' },
+            { time: 580, type: 'clutch', label: 'Матчпоинт! Финальный клатч!' },
         ],
     },
     {
         id: 'nba-finals-2024',
         sport: 'basketball',
         title: 'NBA Finals 2024 — Game 5',
-        desc: 'Celtics vs Mavericks. Реальные данные матча.',
-        duration: m(48), // 4 quarters × 12 min
+        desc: 'Celtics чемпионы! Смотри и предсказывай моменты!',
+        duration: 600, // 10 min
         badge: 'live',
         teamA: '🟢 Celtics',
         teamB: '🔵 Mavericks',
-        matchSpeed: MATCH_SPEED,
+        videoId: '28qRcGgOSt4',
+        videoStart: 0,
         events: [
-            // NBA Finals 2024 Game 5 - Celtics won championship
-            { time: m(3), type: 'three', label: 'Q1 — Тейтум 3-очковый!' },
-            { time: m(8), type: 'dunk', label: 'Q1 — Браун данк в проходе!' },
-            { time: m(14), type: 'block', label: 'Q2 — Блок Порзингиса!' },
-            { time: m(18), type: 'three', label: 'Q2 — Уайт 3-очковый с угла!' },
-            { time: m(22), type: 'steal', label: 'Q2 — Перехват Холидей! Быстрый отрыв' },
-            { time: m(27), type: 'dunk', label: 'Q3 — ПОСТЕР! Браун через Лайвли!' },
-            { time: m(32), type: 'three', label: 'Q3 — Дончич 3-очковый! Камбек!' },
-            { time: m(36), type: 'block', label: 'Q3 — Блок на последней секунде!' },
-            { time: m(40), type: 'three', label: 'Q4 — Тейтум 3-очковый! Разрыв!' },
-            { time: m(44), type: 'dunk', label: 'Q4 — Финальный данк! Celtics чемпионы!' },
+            // NBA - estimated key moments
+            { time: 30, type: 'dunk', label: 'ДАНК! Мощнейший в проходе!' },
+            { time: 80, type: 'three', label: '3-очковый! С дистанции!' },
+            { time: 140, type: 'block', label: 'БЛОК! На кольце!' },
+            { time: 200, type: 'dunk', label: 'Данк через защитника!' },
+            { time: 260, type: 'steal', label: 'Перехват! Быстрый отрыв!' },
+            { time: 330, type: 'three', label: '3-очковый! Баззер-битер!' },
+            { time: 400, type: 'dunk', label: 'ПОСТЕР! Данк через двоих!' },
+            { time: 470, type: 'block', label: 'Блок на последней секунде!' },
+            { time: 530, type: 'three', label: '3-очковый! С логотипа!' },
+            { time: 580, type: 'dunk', label: 'Финальный данк!' },
         ],
     },
 ];
@@ -232,6 +228,7 @@ class GameEngine {
         this.matchScoreB = 0;
         this.tickInterval = null;
         this.startTimestamp = 0;
+        this.getVideoTime = null;
         this.onTick = null;
         this.onEvent = null;
         this.onEnd = null;
@@ -264,7 +261,15 @@ class GameEngine {
     _tick() {
         if (!this.isPlaying || this.isPaused) return;
 
-        this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+        if (this.getVideoTime) {
+            try {
+                const vt = this.getVideoTime();
+                if (typeof vt === 'number' && vt >= 0) this.currentTime = vt;
+                else this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+            } catch { this.currentTime = (performance.now() - this.startTimestamp) / 1000; }
+        } else {
+            this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+        }
 
         // Check for events that just happened (for flash display)
         for (const ev of this.match.events) {
@@ -676,7 +681,7 @@ class App {
         const grid = document.getElementById('matches-grid');
         grid.innerHTML = MATCHES.map(m => {
             const sport = SPORTS[m.sport];
-            const matchMins = Math.round(m.duration / (m.matchSpeed || 2));
+            const matchMins = Math.floor(m.duration / 60);
             return `
                 <div class="match-card" data-id="${m.id}">
                     <span class="match-badge badge-${m.badge}">${m.badge === 'live' ? '● LIVE' : 'DEMO'}</span>
@@ -776,10 +781,41 @@ class App {
         this.engine.onEvent = (ev) => this._onMatchEvent(ev);
         this.engine.onEnd = () => this._onGameEnd();
 
-        // Match visualization
-        document.getElementById('demo-viz').classList.remove('hidden');
-        document.getElementById('yt-container').classList.add('hidden');
+        // Video or demo mode
+        const demoViz = document.getElementById('demo-viz');
+        const ytContainer = document.getElementById('yt-container');
         document.getElementById('event-feed').innerHTML = '';
+        if (match.videoId && typeof YT !== 'undefined' && YT.Player) {
+            demoViz.classList.add('hidden');
+            ytContainer.classList.remove('hidden');
+            ytContainer.innerHTML = '<div id="yt-player-host"></div>';
+            const self = this;
+            const startSec = match.videoStart || 0;
+            try {
+                this.ytPlayer = new YT.Player('yt-player-host', {
+                    videoId: match.videoId,
+                    playerVars: { autoplay: 1, mute: 0, controls: 1, modestbranding: 1, rel: 0, start: startSec },
+                    events: {
+                        onReady: (e) => {
+                            e.target.seekTo(startSec, true);
+                            e.target.playVideo();
+                            self.engine.getVideoTime = () => e.target.getCurrentTime() - startSec;
+                        },
+                        onError: () => {
+                            ytContainer.classList.add('hidden');
+                            demoViz.classList.remove('hidden');
+                            self.engine.getVideoTime = null;
+                        },
+                    },
+                });
+            } catch {
+                ytContainer.classList.add('hidden');
+                demoViz.classList.remove('hidden');
+            }
+        } else {
+            demoViz.classList.remove('hidden');
+            ytContainer.classList.add('hidden');
+        }
 
         // Reset commentary
         this.commentary = new AICommentary();
@@ -801,14 +837,12 @@ class App {
 
     _onTick(t) {
         const match = this.engine.match;
-        const speed = match.matchSpeed || MATCH_SPEED;
-        const matchMin = Math.floor(t / speed);
-        const matchSec = Math.floor((t % speed) * (60 / speed));
-        const timeStr = `${matchMin}'`;
-        const fullTime = `${matchMin}:${String(matchSec).padStart(2, '0')}`;
+        const mins = Math.floor(t / 60);
+        const secs = Math.floor(t % 60);
+        const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
         document.getElementById('g-timer').textContent = timeStr;
-        document.getElementById('demo-clock').textContent = fullTime;
+        document.getElementById('demo-clock').textContent = timeStr;
         document.getElementById('g-score').textContent = this.engine.score;
         document.getElementById('g-events').textContent = `${this.engine.eventsFound}/${match.events.length}`;
 
@@ -959,6 +993,7 @@ class App {
     // --- Game End ---
     _onGameEnd() {
         this.sound.end();
+        this.engine.getVideoTime = null;
         document.getElementById('predict-btn').disabled = true;
 
         // Save score
@@ -1063,6 +1098,13 @@ class App {
         this.engine.isPlaying = false;
         this.engine.getVideoTime = null;
         clearInterval(this.engine.tickInterval);
+        if (this.ytPlayer && this.ytPlayer.destroy) {
+            try { this.ytPlayer.destroy(); } catch {}
+            this.ytPlayer = null;
+        }
+        const ytContainer = document.getElementById('yt-container');
+        ytContainer.classList.add('hidden');
+        ytContainer.innerHTML = '';
         this._showMatchSelect();
     }
 
