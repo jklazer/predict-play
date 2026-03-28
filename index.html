@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PredictPlay — Угадай момент</title>
+    <meta name="description" content="Смотри трансляции, предсказывай события, набирай очки. Игра нового поколения.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <canvas id="bg-canvas"></canvas>
+
+        <!-- ===== LANDING ===== -->
+        <section id="screen-landing" class="screen active">
+            <div class="landing-content">
+                <div class="logo-block">
+                    <span class="logo-icon">🎯</span>
+                    <h1 class="logo-text">PREDICT<span class="accent">PLAY</span></h1>
+                    <p class="tagline">Предскажи момент. Набери очки. Стань первым.</p>
+                </div>
+                <button class="btn btn-primary btn-lg pulse-glow" id="btn-play">
+                    <span>▶</span> ИГРАТЬ
+                </button>
+                <div class="rules-block">
+                    <h3>Как играть</h3>
+                    <div class="rules-grid">
+                        <div class="rule-item"><span class="rule-num">1</span><span>📺</span><span>Выбери матч</span></div>
+                        <div class="rule-item"><span class="rule-num">2</span><span>👀</span><span>Следи за интенсивностью</span></div>
+                        <div class="rule-item"><span class="rule-num">3</span><span>🎯</span><span>Жми PREDICT перед событием</span></div>
+                        <div class="rule-item"><span class="rule-num">4</span><span>🏆</span><span>Поднимайся в рейтинге</span></div>
+                    </div>
+                </div>
+                <div class="sports-row">
+                    <span class="sport-badge">⚽ Футбол</span>
+                    <span class="sport-badge">🎮 CS2</span>
+                    <span class="sport-badge">🏀 Баскетбол</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== NICKNAME MODAL ===== -->
+        <div id="modal-nickname" class="modal hidden">
+            <div class="modal-body">
+                <h2>Твой никнейм</h2>
+                <input type="text" id="input-nickname" class="input-text" placeholder="Введи ник..." maxlength="16" autocomplete="off" spellcheck="false">
+                <button class="btn btn-primary" id="btn-nickname-ok">Готово</button>
+            </div>
+        </div>
+
+        <!-- ===== MATCH SELECT ===== -->
+        <section id="screen-select" class="screen">
+            <div class="screen-header">
+                <button class="btn btn-ghost" id="btn-back-landing">← Назад</button>
+                <h2>Выбери матч</h2>
+                <button class="btn btn-ghost" id="btn-to-lb">🏆 Рейтинг</button>
+            </div>
+            <div id="matches-grid" class="matches-grid"></div>
+        </section>
+
+        <!-- ===== GAME ===== -->
+        <section id="screen-game" class="screen">
+            <div class="game-top">
+                <div class="game-stat"><span class="stat-label">Очки</span><span class="stat-value" id="g-score">0</span></div>
+                <div class="game-timer" id="g-timer">00:00</div>
+                <div class="game-stat"><span class="stat-label">События</span><span class="stat-value" id="g-events">0/0</span></div>
+            </div>
+
+            <div class="game-arena" id="game-arena">
+                <div id="demo-viz" class="demo-viz">
+                    <div class="demo-teams">
+                        <div class="demo-team team-a"><span class="team-name" id="tm-a"></span><span class="team-score" id="ts-a">0</span></div>
+                        <div class="demo-vs">VS</div>
+                        <div class="demo-team team-b"><span class="team-name" id="tm-b"></span><span class="team-score" id="ts-b">0</span></div>
+                    </div>
+                    <div class="demo-clock" id="demo-clock">00:00</div>
+                    <div class="demo-event-flash" id="event-flash"></div>
+                </div>
+                <div id="yt-container" class="yt-container hidden"></div>
+                <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+            </div>
+
+            <div class="intensity-container">
+                <span class="intensity-label">ИНТЕНСИВНОСТЬ</span>
+                <div class="intensity-track"><div class="intensity-fill" id="intensity-fill"></div></div>
+            </div>
+
+            <div class="event-types" id="event-types"></div>
+
+            <div class="predict-zone">
+                <button class="predict-btn" id="predict-btn" disabled>
+                    <span class="predict-icon">🎯</span>
+                    <span class="predict-text">PREDICT</span>
+                </button>
+            </div>
+
+            <div class="score-popup hidden" id="score-popup">
+                <span class="popup-score"></span>
+                <span class="popup-label"></span>
+            </div>
+
+            <div class="game-bottom">
+                <div class="panel predictions-panel">
+                    <h4>Мои предсказания</h4>
+                    <div id="pred-list" class="pred-list"></div>
+                </div>
+                <div class="panel lb-panel">
+                    <h4>Рейтинг</h4>
+                    <div id="mini-lb" class="mini-lb"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== RESULTS ===== -->
+        <section id="screen-results" class="screen">
+            <div class="results-content">
+                <h2 class="results-title">Матч окончен!</h2>
+                <div class="results-grade" id="r-grade">S</div>
+                <div class="results-score-big" id="r-score">0</div>
+                <div class="results-label">очков</div>
+                <div class="results-stats" id="r-stats"></div>
+                <div class="results-vs">
+                    <h3>Ты vs AI Predictor</h3>
+                    <div class="vs-bars" id="r-vs"></div>
+                </div>
+                <div class="results-timeline" id="r-timeline"></div>
+                <div class="results-actions">
+                    <button class="btn btn-primary" id="btn-again">Играть ещё</button>
+                    <button class="btn btn-secondary" id="btn-results-lb">🏆 Рейтинг</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LEADERBOARD ===== -->
+        <section id="screen-leaderboard" class="screen">
+            <div class="screen-header">
+                <button class="btn btn-ghost" id="btn-back-select">← К матчам</button>
+                <h2>🏆 Турнирная таблица</h2>
+                <span></span>
+            </div>
+            <div id="lb-full" class="lb-full"></div>
+        </section>
+
+        <!-- Countdown overlay -->
+        <div id="countdown-overlay" class="countdown-overlay hidden">
+            <div class="countdown-num" id="cd-num">3</div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
