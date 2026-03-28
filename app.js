@@ -787,20 +787,26 @@ class App {
         // YouTube or demo mode
         const demoViz = document.getElementById('demo-viz');
         const ytContainer = document.getElementById('yt-container');
-        if (match.videoId) {
+        if (match.videoId && typeof YT !== 'undefined' && YT.Player) {
             demoViz.classList.add('hidden');
             ytContainer.classList.remove('hidden');
-            ytContainer.innerHTML = `<iframe id="yt-iframe" src="https://www.youtube.com/embed/${match.videoId}?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&start=0" allowfullscreen allow="autoplay" loading="eager"></iframe>`;
-            // Fallback: if YouTube fails to load, show demo-viz after 4s
-            this._ytFallbackTimer = setTimeout(() => {
-                const iframe = document.getElementById('yt-iframe');
-                if (iframe) {
-                    try {
-                        // Check if iframe loaded (cross-origin will throw, that's OK — means it loaded)
-                        void iframe.contentWindow;
-                    } catch { /* loaded fine */ }
-                }
-            }, 4000);
+            ytContainer.innerHTML = '<div id="yt-player-host"></div>';
+            try {
+                this.ytPlayer = new YT.Player('yt-player-host', {
+                    videoId: match.videoId,
+                    playerVars: { autoplay: 1, mute: 1, controls: 1, modestbranding: 1, rel: 0 },
+                    events: {
+                        onReady: (e) => { e.target.playVideo(); },
+                        onError: () => {
+                            ytContainer.classList.add('hidden');
+                            demoViz.classList.remove('hidden');
+                        },
+                    },
+                });
+            } catch {
+                ytContainer.classList.add('hidden');
+                demoViz.classList.remove('hidden');
+            }
         } else {
             demoViz.classList.remove('hidden');
             ytContainer.classList.add('hidden');
