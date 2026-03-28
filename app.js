@@ -54,19 +54,20 @@ const MATCHES = [
         videoId: 'SusiqEN2Y4w',
         videoStart: 0,
         events: [
-            // Goals compilation: goals appear roughly every 6-10 seconds
-            { time: 7, type: 'goal', label: 'ГОЛ! Легендарный удар!' },
-            { time: 18, type: 'goal', label: 'ГОЛ! Невероятный гол!', scoreA: 1 },
-            { time: 30, type: 'goal', label: 'ГОЛ! Ракета в верхний угол!' },
-            { time: 42, type: 'goal', label: 'ГОЛ! Удар с лёта!', scoreB: 1 },
-            { time: 55, type: 'goal', label: 'ГОЛ! Дриблинг + удар!' },
-            { time: 68, type: 'goal', label: 'ГОЛ! Дальний удар!', scoreA: 1 },
-            { time: 82, type: 'goal', label: 'ГОЛ! Штрафной в девятку!' },
-            { time: 98, type: 'goal', label: 'ГОЛ! Шедевральный гол!', scoreB: 1 },
-            { time: 115, type: 'goal', label: 'ГОЛ! Мяч в сетке!' },
-            { time: 130, type: 'goal', label: 'ГОЛ! Удар через себя!', scoreA: 1 },
-            { time: 148, type: 'goal', label: 'ГОЛ! Бисиклета!', scoreB: 1 },
-            { time: 165, type: 'goal', label: 'ГОЛ! Мяч эпохи!', scoreA: 1 },
+            // Real timestamps from video scan (SusiqEN2Y4w)
+            // Each clip ~14s, goal moment verified via Playwright screenshots
+            { time: 8, type: 'goal', label: 'ГОЛ! #1 Townsend — дальний удар!' },
+            { time: 22, type: 'goal', label: 'ГОЛ! #2 Lamine Yamal — ракета в угол!', scoreA: 1 },
+            { time: 34, type: 'goal', label: 'ГОЛ! #3 Patrik Schick — удар с центра поля!' },
+            { time: 48, type: 'goal', label: 'ГОЛ! #4 Bellingham — бисиклета на 90+5!', scoreB: 1 },
+            { time: 63, type: 'goal', label: 'ГОЛ! #5 Garnacho — ножницы!', scoreA: 1 },
+            { time: 77, type: 'goal', label: 'ГОЛ! #6 Легендарный удар!' },
+            { time: 92, type: 'goal', label: 'ГОЛ! #7 Невероятный гол!', scoreB: 1 },
+            { time: 106, type: 'goal', label: 'ГОЛ! #8 Zlatan — бисиклета с 30 метров!' },
+            { time: 120, type: 'goal', label: 'ГОЛ! #9 Шедевр!', scoreA: 1 },
+            { time: 134, type: 'goal', label: 'ГОЛ! #10 Мяч в девятку!', scoreB: 1 },
+            { time: 148, type: 'goal', label: 'ГОЛ! #11 Удар с лёта!' },
+            { time: 164, type: 'goal', label: 'ГОЛ! #12 Гол эпохи!', scoreA: 1 },
         ],
     },
     {
