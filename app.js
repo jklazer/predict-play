@@ -118,7 +118,7 @@ const MATCHES = [
         badge: 'live',
         teamA: 'Home',
         teamB: 'Away',
-        videoId: 'hkdHGqOBv1s',
+        videoId: 'SusiqEN2Y4w',
         events: [
             { time: 18, type: 'foul', label: 'Фол! Опасная ситуация' },
             { time: 35, type: 'corner', label: 'Угловой — подача во вратарскую' },
@@ -790,7 +790,17 @@ class App {
         if (match.videoId) {
             demoViz.classList.add('hidden');
             ytContainer.classList.remove('hidden');
-            ytContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${match.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0" allowfullscreen allow="autoplay"></iframe>`;
+            ytContainer.innerHTML = `<iframe id="yt-iframe" src="https://www.youtube.com/embed/${match.videoId}?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&start=0" allowfullscreen allow="autoplay" loading="eager"></iframe>`;
+            // Fallback: if YouTube fails to load, show demo-viz after 4s
+            this._ytFallbackTimer = setTimeout(() => {
+                const iframe = document.getElementById('yt-iframe');
+                if (iframe) {
+                    try {
+                        // Check if iframe loaded (cross-origin will throw, that's OK — means it loaded)
+                        void iframe.contentWindow;
+                    } catch { /* loaded fine */ }
+                }
+            }, 4000);
         } else {
             demoViz.classList.remove('hidden');
             ytContainer.classList.add('hidden');

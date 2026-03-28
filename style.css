@@ -388,9 +388,9 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
 .demo-event-flash.show { opacity: 1; }
 
 /* YouTube container */
-.yt-container { width: 100%; aspect-ratio: 16/9; }
+.yt-container { width: 100%; aspect-ratio: 16/9; background: #000; }
 .yt-container.hidden { display: none; }
-.yt-container iframe { width: 100%; height: 100%; border: none; }
+.yt-container iframe { width: 100%; height: 100%; border: none; display: block; }
 
 /* Progress bar */
 .progress-track {
