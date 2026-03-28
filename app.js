@@ -539,6 +539,66 @@ class AICommentary {
     }
 }
 
+// ==================== CLAUDE API COMMENTARY ====================
+const CLAUDE_PROXY = 'http://5.129.230.72:8899/api/comment';
+
+class ClaudeCommentary {
+    constructor() {
+        this.fallback = new AICommentary();
+        this.lastFetch = 0;
+        this.fetchInterval = 12; // seconds between API calls
+        this.pending = false;
+        this.apiAvailable = true; // set to false on error
+    }
+
+    update(state) {
+        const { time, intensity } = state;
+
+        // Try Claude API every fetchInterval seconds
+        if (this.apiAvailable && !this.pending && time - this.lastFetch >= this.fetchInterval) {
+            this.lastFetch = time;
+            this.pending = true;
+            this._fetchClaudeComment(state);
+        }
+
+        // Always return fallback for immediate display
+        return this.fallback.update(state);
+    }
+
+    async _fetchClaudeComment(state) {
+        try {
+            const match = window._currentMatch;
+            const resp = await fetch(CLAUDE_PROXY, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    teamA: match?.teamA || '?',
+                    teamB: match?.teamB || '?',
+                    score: `${window._matchScoreA || 0}:${window._matchScoreB || 0}`,
+                    matchMin: Math.floor(state.time / 60),
+                    intensity: Math.round(state.intensity * 100),
+                }),
+            });
+            if (!resp.ok) throw new Error('API error');
+            const data = await resp.json();
+            if (data.text) {
+                // Push Claude's comment to the UI
+                if (window._setCommentaryFn) {
+                    window._setCommentaryFn({ text: '🧠 ' + data.text, mood: state.intensity > 0.7 ? 'alert' : '' });
+                }
+            }
+        } catch {
+            // Silently fall back — don't retry for 30s
+            this.fetchInterval = 30;
+        } finally {
+            this.pending = false;
+        }
+    }
+
+    onEvent(event) { return this.fallback.onEvent(event); }
+    onPrediction(result) { return this.fallback.onPrediction(result); }
+}
+
 // ==================== CONFETTI ====================
 class Confetti {
     constructor(canvasId) {
@@ -612,7 +672,7 @@ class App {
         this.ai = new AIOpponent();
         this.lb = new LeaderboardManager();
         this.sound = new SoundManager();
-        this.commentary = new AICommentary();
+        this.commentary = new ClaudeCommentary();
         this.confetti = null;
         this.ytPlayer = null;
         this._countdownInterval = null;
@@ -798,6 +858,12 @@ class App {
         document.getElementById('pred-list').innerHTML = '';
         document.getElementById('predict-btn').disabled = false;
 
+        // Expose match state for Claude API
+        window._currentMatch = match;
+        window._matchScoreA = 0;
+        window._matchScoreB = 0;
+        window._setCommentaryFn = (c) => this._setCommentary(c);
+
         // Setup engine callbacks
         this.engine.onTick = (t) => this._onTick(t);
         this.engine.onEvent = (ev) => this._onMatchEvent(ev);
@@ -848,7 +914,7 @@ class App {
         }
 
         // Reset commentary
-        this.commentary = new AICommentary();
+        this.commentary = new ClaudeCommentary();
         this._setCommentary({ text: '🤖 Нейросеть инициализирована. Анализирую матч в реальном времени...', mood: '' });
 
         // Start AI simulation
@@ -900,6 +966,8 @@ class App {
         // Team scores
         document.getElementById('ts-a').textContent = this.engine.matchScoreA;
         document.getElementById('ts-b').textContent = this.engine.matchScoreB;
+        window._matchScoreA = this.engine.matchScoreA;
+        window._matchScoreB = this.engine.matchScoreB;
 
         // AI Commentary
         const comment = this.commentary.update({
