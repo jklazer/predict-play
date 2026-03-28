@@ -582,9 +582,11 @@ class ClaudeCommentary {
             if (!resp.ok) throw new Error('API error');
             const data = await resp.json();
             if (data.text) {
-                // Push Claude's comment to the UI
+                // Push AI comment to UI and suppress fallback for a while
                 if (window._setCommentaryFn) {
                     window._setCommentaryFn({ text: '🧠 ' + data.text, mood: state.intensity > 0.7 ? 'alert' : '' });
+                    this.fallback.lastTime = state.time; // prevent fallback from overwriting
+                    this.fallback.minInterval = 15; // give AI comment time to be visible
                 }
             }
         } catch {
