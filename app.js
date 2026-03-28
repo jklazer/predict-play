@@ -109,6 +109,28 @@ const MATCHES = [
             { time: 172, type: 'dunk', label: 'Финальный данк! Победа!' },
         ],
     },
+    {
+        id: 'yt-football',
+        sport: 'football',
+        title: 'YouTube — Live матч',
+        desc: 'Реальная трансляция с YouTube. Предсказывай по видео!',
+        duration: 180,
+        badge: 'live',
+        teamA: 'Home',
+        teamB: 'Away',
+        videoId: 'hkdHGqOBv1s',
+        events: [
+            { time: 18, type: 'foul', label: 'Фол! Опасная ситуация' },
+            { time: 35, type: 'corner', label: 'Угловой — подача во вратарскую' },
+            { time: 52, type: 'goal', label: 'ГОЛ! Невероятный удар!', scoreA: 1 },
+            { time: 75, type: 'yellow', label: 'Жёлтая карточка за фол' },
+            { time: 95, type: 'foul', label: 'Фол на линии штрафной' },
+            { time: 115, type: 'goal', label: 'ГОЛ! Ответный мяч!', scoreB: 1 },
+            { time: 138, type: 'corner', label: 'Угловой — опасный момент' },
+            { time: 160, type: 'penalty', label: 'ПЕНАЛЬТИ!' },
+            { time: 173, type: 'goal', label: 'ГОЛ! Победный мяч!', scoreA: 1 },
+        ],
+    },
 ];
 
 // Simulated leaderboard players
@@ -440,6 +462,79 @@ function initBgCanvas() {
     window.addEventListener('resize', () => { resize(); createParticles(); });
 }
 
+// ==================== AI COMMENTARY ====================
+class AICommentary {
+    constructor() {
+        this.lastTime = -10;
+        this.minInterval = 5;
+    }
+
+    update(state) {
+        const { time, intensity, eventsFound, totalEvents, score, duration, aiScore } = state;
+        if (time - this.lastTime < this.minInterval) return null;
+
+        let comment = null;
+        let mood = '';
+
+        if (intensity > 0.85) {
+            const msgs = [
+                ['⚡ Нейросеть фиксирует предсобытийный паттерн — вероятность события ' + (78 + Math.floor(Math.random() * 17)) + '%', 'danger'],
+                ['📊 Сигнатура активности совпадает с предсобытийной моделью. Рекомендация: PREDICT', 'danger'],
+                ['🔥 Аномальный рост напряжения — ML-модель прогнозирует событие в ближайшие секунды', 'danger'],
+            ];
+            const pick = msgs[Math.floor(Math.random() * msgs.length)];
+            comment = pick[0]; mood = pick[1];
+            this.minInterval = 4;
+        } else if (intensity > 0.55) {
+            const msgs = [
+                ['📈 Индекс активности растёт. AI мониторит паттерны обеих команд', 'alert'],
+                ['🤖 Анализ: умеренное напряжение, вероятность события повышается', 'alert'],
+                ['🔍 Детектор событий в режиме повышенного внимания', 'alert'],
+            ];
+            const pick = msgs[Math.floor(Math.random() * msgs.length)];
+            comment = pick[0]; mood = pick[1];
+            this.minInterval = 6;
+        } else {
+            const progress = time / duration;
+            if (progress > 0.48 && progress < 0.52) {
+                comment = `⏱ Экватор матча. Найдено ${eventsFound}/${totalEvents} событий. AI Predictor: ${aiScore} очков`;
+                mood = '';
+            } else if (progress > 0.82 && progress < 0.85) {
+                comment = `🏁 Финальный отрезок! Осталось ${totalEvents - eventsFound} событий — каждое на вес золота`;
+                mood = 'alert';
+            } else {
+                const general = [
+                    ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
+                    [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
+                    ['🤖 Модель обрабатывает телеметрию матча в реальном времени...', ''],
+                    [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
+                    ['🧠 Deep Learning модель анализирует динамику команд...', ''],
+                    ['📡 Computer Vision pipeline: детекция движений, трекинг мяча, анализ позиций', ''],
+                ];
+                const pick = general[Math.floor(Math.random() * general.length)];
+                comment = pick[0]; mood = pick[1];
+            }
+            this.minInterval = 7;
+        }
+
+        if (comment) this.lastTime = time;
+        return comment ? { text: comment, mood } : null;
+    }
+
+    onEvent(event) {
+        const pct = 25 + Math.floor(Math.random() * 40);
+        return { text: `✅ ${event.label} — только ${pct}% игроков предсказали этот момент`, mood: 'success' };
+    }
+
+    onPrediction(result) {
+        if (result.quality === 'perfect') return { text: '🎯 НЕВЕРОЯТНО! Точность < 0.5с — вы превзошли нейросеть!', mood: 'success' };
+        if (result.quality === 'excellent') return { text: '✨ Великолепная точность! Топ-8% среди всех игроков', mood: 'success' };
+        if (result.quality === 'great') return { text: '👏 Отличный тайминг! ML-модель фиксирует высокую точность', mood: 'success' };
+        if (result.quality === 'false') return { text: '❌ Ложное срабатывание. AI рекомендует: ждите роста интенсивности', mood: 'danger' };
+        return null;
+    }
+}
+
 // ==================== CONFETTI ====================
 class Confetti {
     constructor(canvasId) {
@@ -513,7 +608,9 @@ class App {
         this.ai = new AIOpponent();
         this.lb = new LeaderboardManager();
         this.sound = new SoundManager();
+        this.commentary = new AICommentary();
         this.confetti = null;
+        this.ytPlayer = null;
         this.currentScreen = 'landing';
         this.selectedMatch = null;
     }
@@ -687,6 +784,23 @@ class App {
         this.engine.onEvent = (ev) => this._onMatchEvent(ev);
         this.engine.onEnd = () => this._onGameEnd();
 
+        // YouTube or demo mode
+        const demoViz = document.getElementById('demo-viz');
+        const ytContainer = document.getElementById('yt-container');
+        if (match.videoId) {
+            demoViz.classList.add('hidden');
+            ytContainer.classList.remove('hidden');
+            ytContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${match.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0" allowfullscreen allow="autoplay"></iframe>`;
+        } else {
+            demoViz.classList.remove('hidden');
+            ytContainer.classList.add('hidden');
+            ytContainer.innerHTML = '';
+        }
+
+        // Reset commentary
+        this.commentary = new AICommentary();
+        this._setCommentary({ text: '🤖 Нейросеть инициализирована. Анализирую матч в реальном времени...', mood: '' });
+
         // Start AI simulation
         this.ai.simulateMatch(match.events);
 
@@ -736,6 +850,18 @@ class App {
         // Team scores
         document.getElementById('ts-a').textContent = this.engine.matchScoreA;
         document.getElementById('ts-b').textContent = this.engine.matchScoreB;
+
+        // AI Commentary
+        const comment = this.commentary.update({
+            time: t,
+            intensity,
+            eventsFound: this.engine.eventsFound,
+            totalEvents: match.events.length,
+            score: this.engine.score,
+            duration: match.duration,
+            aiScore: this.ai.score,
+        });
+        if (comment) this._setCommentary(comment);
     }
 
     _onMatchEvent(ev) {
@@ -749,6 +875,10 @@ class App {
         const arena = document.getElementById('game-arena');
         arena.classList.add('shake');
         setTimeout(() => arena.classList.remove('shake'), 500);
+
+        // AI commentary on event
+        const c = this.commentary.onEvent(ev);
+        if (c) setTimeout(() => this._setCommentary(c), 800);
     }
 
     _onPredict() {
@@ -765,6 +895,10 @@ class App {
         if (result.quality === 'perfect' || result.quality === 'excellent') {
             this.confetti.fire();
         }
+
+        // AI commentary on prediction
+        const c = this.commentary.onPrediction(result);
+        if (c) setTimeout(() => this._setCommentary(c), 300);
 
         // Add to prediction list
         this._addPredictionItem(result);
@@ -923,6 +1057,18 @@ class App {
             <span class="leg-miss">Промах</span>
         </div>`;
         container.innerHTML = html;
+    }
+
+    // --- Commentary ---
+    _setCommentary({ text, mood }) {
+        const el = document.getElementById('ai-commentary');
+        const textEl = document.getElementById('ai-text');
+        el.className = 'ai-commentary' + (mood ? ' ' + mood : '');
+        textEl.textContent = text;
+        // Re-trigger fade animation
+        textEl.style.animation = 'none';
+        void textEl.offsetWidth;
+        textEl.style.animation = 'fadeIn 0.4s ease';
     }
 
     // --- Full Leaderboard ---
