@@ -440,6 +440,72 @@ function initBgCanvas() {
     window.addEventListener('resize', () => { resize(); createParticles(); });
 }
 
+// ==================== CONFETTI ====================
+class Confetti {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.running = false;
+        this._resize();
+        window.addEventListener('resize', () => this._resize());
+    }
+
+    _resize() {
+        if (!this.canvas) return;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    fire() {
+        if (!this.canvas) return;
+        const colors = ['#fbbf24', '#6366f1', '#06b6d4', '#10b981', '#ef4444', '#f97316', '#a855f7'];
+        for (let i = 0; i < 100; i++) {
+            this.particles.push({
+                x: window.innerWidth / 2 + (Math.random() - 0.5) * 300,
+                y: window.innerHeight / 2,
+                dx: (Math.random() - 0.5) * 14,
+                dy: (Math.random() - 0.5) * 14 - 5,
+                w: Math.random() * 10 + 4,
+                h: Math.random() * 6 + 2,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                dr: (Math.random() - 0.5) * 12,
+                life: 1,
+                decay: 0.007 + Math.random() * 0.008,
+                gravity: 0.12,
+            });
+        }
+        if (!this.running) { this.running = true; this._animate(); }
+    }
+
+    _animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.particles = this.particles.filter(p => p.life > 0);
+        for (const p of this.particles) {
+            p.x += p.dx;
+            p.dy += p.gravity;
+            p.y += p.dy;
+            p.dx *= 0.985;
+            p.rotation += p.dr;
+            p.life -= p.decay;
+            this.ctx.save();
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate((p.rotation * Math.PI) / 180);
+            this.ctx.globalAlpha = Math.max(0, p.life);
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            this.ctx.restore();
+        }
+        if (this.particles.length > 0) {
+            requestAnimationFrame(() => this._animate());
+        } else {
+            this.running = false;
+        }
+    }
+}
+
 // ==================== UI CONTROLLER ====================
 class App {
     constructor() {
@@ -447,12 +513,14 @@ class App {
         this.ai = new AIOpponent();
         this.lb = new LeaderboardManager();
         this.sound = new SoundManager();
+        this.confetti = null;
         this.currentScreen = 'landing';
         this.selectedMatch = null;
     }
 
     init() {
         this.sound.init();
+        this.confetti = new Confetti('confetti-canvas');
         initBgCanvas();
         this._bindEvents();
 
@@ -692,6 +760,11 @@ class App {
 
         // Show popup
         this._showScorePopup(result);
+
+        // Confetti on perfect/excellent
+        if (result.quality === 'perfect' || result.quality === 'excellent') {
+            this.confetti.fire();
+        }
 
         // Add to prediction list
         this._addPredictionItem(result);

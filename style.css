@@ -490,6 +490,24 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
 .predict-btn:disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(0.5); }
 .predict-btn.cooldown { animation: none; opacity: 0.5; }
 .predict-icon { font-size: 1.5rem; }
+.predict-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+}
+
+/* Confetti canvas */
+#confetti-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 60;
+    pointer-events: none;
+}
 
 /* --- Score Popup --- */
 .score-popup {
