@@ -46,11 +46,12 @@ const MATCHES = [
         id: 'demo-football',
         sport: 'football',
         title: 'Финал Чемпионата',
-        desc: 'Классический футбольный матч. Идеально для первой игры.',
+        desc: 'Лучшие голы в истории футбола. Идеально для первой игры.',
         duration: 180,
-        badge: 'demo',
+        badge: 'live',
         teamA: 'Барселона',
         teamB: 'Реал Мадрид',
+        videoId: 'SusiqEN2Y4w',
         events: [
             { time: 16, type: 'corner', label: 'Угловой — подача в штрафную' },
             { time: 31, type: 'foul', label: 'Грубый фол в центре поля' },
@@ -67,11 +68,12 @@ const MATCHES = [
         id: 'demo-cs2',
         sport: 'cs2',
         title: 'CS2 Major — Гранд-финал',
-        desc: 'Быстрый темп, много событий. Для продвинутых игроков.',
+        desc: 'Pro-игроки в деле. Быстрый темп, много событий.',
         duration: 200,
-        badge: 'demo',
+        badge: 'live',
         teamA: 'NAVI',
         teamB: 'FaZe',
+        videoId: 'AVbn4eleGGA',
         events: [
             { time: 12, type: 'kill', label: 'Первый фраг раунда!' },
             { time: 24, type: 'headshot', label: 'Хедшот через smoke!' },
@@ -91,11 +93,12 @@ const MATCHES = [
         id: 'demo-nba',
         sport: 'basketball',
         title: 'NBA Плей-офф — Игра 7',
-        desc: 'Баскетбольная классика. Средний темп, высокие ставки.',
+        desc: 'Лучшие моменты сезона NBA 2024-25.',
         duration: 180,
-        badge: 'demo',
+        badge: 'live',
         teamA: 'Lakers',
         teamB: 'Celtics',
+        videoId: '28shPp78KsE',
         events: [
             { time: 14, type: 'three', label: '3-очковый с дистанции!' },
             { time: 30, type: 'dunk', label: 'Мощнейший данк в проходе!' },
@@ -107,28 +110,6 @@ const MATCHES = [
             { time: 140, type: 'block', label: 'Блок на последней секунде!' },
             { time: 158, type: 'three', label: '3-очковый! Разрыв растёт!' },
             { time: 172, type: 'dunk', label: 'Финальный данк! Победа!' },
-        ],
-    },
-    {
-        id: 'yt-football',
-        sport: 'football',
-        title: 'YouTube — Live матч',
-        desc: 'Реальная трансляция с YouTube. Предсказывай по видео!',
-        duration: 180,
-        badge: 'live',
-        teamA: 'Home',
-        teamB: 'Away',
-        videoId: 'SusiqEN2Y4w',
-        events: [
-            { time: 18, type: 'foul', label: 'Фол! Опасная ситуация' },
-            { time: 35, type: 'corner', label: 'Угловой — подача во вратарскую' },
-            { time: 52, type: 'goal', label: 'ГОЛ! Невероятный удар!', scoreA: 1 },
-            { time: 75, type: 'yellow', label: 'Жёлтая карточка за фол' },
-            { time: 95, type: 'foul', label: 'Фол на линии штрафной' },
-            { time: 115, type: 'goal', label: 'ГОЛ! Ответный мяч!', scoreB: 1 },
-            { time: 138, type: 'corner', label: 'Угловой — опасный момент' },
-            { time: 160, type: 'penalty', label: 'ПЕНАЛЬТИ!' },
-            { time: 173, type: 'goal', label: 'ГОЛ! Победный мяч!', scoreA: 1 },
         ],
     },
 ];
@@ -658,6 +639,7 @@ class App {
         $('btn-results-lb').addEventListener('click', () => { this._renderFullLB(); this.showScreen('leaderboard'); });
 
         $('predict-btn').addEventListener('click', () => this._onPredict());
+        $('btn-quit-game').addEventListener('click', () => this._quitGame());
 
         // Keyboard shortcut: space to predict
         document.addEventListener('keydown', e => {
@@ -1073,6 +1055,17 @@ class App {
             <span class="leg-miss">Промах</span>
         </div>`;
         container.innerHTML = html;
+    }
+
+    // --- Quit Game ---
+    _quitGame() {
+        this.engine.stop();
+        this.engine.isPlaying = false;
+        clearInterval(this.engine.tickInterval);
+        const ytContainer = document.getElementById('yt-container');
+        ytContainer.classList.add('hidden');
+        ytContainer.innerHTML = '';
+        this._showMatchSelect();
     }
 
     // --- Commentary ---
