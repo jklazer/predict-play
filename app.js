@@ -45,71 +45,82 @@ const MATCHES = [
     {
         id: 'demo-football',
         sport: 'football',
-        title: 'Финал Чемпионата',
-        desc: 'Лучшие голы в истории футбола. Идеально для первой игры.',
+        title: 'Top 100 Legendary Goals',
+        desc: 'Лучшие голы в истории футбола. Видео синхронизировано с игрой.',
         duration: 180,
         badge: 'live',
-        teamA: 'Барселона',
-        teamB: 'Реал Мадрид',
+        teamA: 'Legends',
+        teamB: 'Legends',
         videoId: 'SusiqEN2Y4w',
+        videoStart: 0,
         events: [
-            { time: 16, type: 'corner', label: 'Угловой — подача в штрафную' },
-            { time: 31, type: 'foul', label: 'Грубый фол в центре поля' },
-            { time: 47, type: 'goal', label: 'ГОЛ! Удар со штрафного!', scoreA: 1 },
-            { time: 68, type: 'yellow', label: 'Жёлтая карточка за симуляцию' },
-            { time: 89, type: 'corner', label: 'Угловой — опасный момент' },
-            { time: 108, type: 'goal', label: 'ГОЛ! Пенальти реализован!', scoreB: 1 },
-            { time: 130, type: 'foul', label: 'Фол на подступах к штрафной' },
-            { time: 148, type: 'penalty', label: 'ПЕНАЛЬТИ! Нарушение в штрафной' },
-            { time: 165, type: 'goal', label: 'ГОЛ! Удар в девятку на последних минутах!', scoreA: 1 },
+            // Goals compilation: goals appear roughly every 6-10 seconds
+            { time: 7, type: 'goal', label: 'ГОЛ! Легендарный удар!' },
+            { time: 18, type: 'goal', label: 'ГОЛ! Невероятный гол!', scoreA: 1 },
+            { time: 30, type: 'goal', label: 'ГОЛ! Ракета в верхний угол!' },
+            { time: 42, type: 'goal', label: 'ГОЛ! Удар с лёта!', scoreB: 1 },
+            { time: 55, type: 'goal', label: 'ГОЛ! Дриблинг + удар!' },
+            { time: 68, type: 'goal', label: 'ГОЛ! Дальний удар!', scoreA: 1 },
+            { time: 82, type: 'goal', label: 'ГОЛ! Штрафной в девятку!' },
+            { time: 98, type: 'goal', label: 'ГОЛ! Шедевральный гол!', scoreB: 1 },
+            { time: 115, type: 'goal', label: 'ГОЛ! Мяч в сетке!' },
+            { time: 130, type: 'goal', label: 'ГОЛ! Удар через себя!', scoreA: 1 },
+            { time: 148, type: 'goal', label: 'ГОЛ! Бисиклета!', scoreB: 1 },
+            { time: 165, type: 'goal', label: 'ГОЛ! Мяч эпохи!', scoreA: 1 },
         ],
     },
     {
         id: 'demo-cs2',
         sport: 'cs2',
-        title: 'CS2 Major — Гранд-финал',
-        desc: 'Pro-игроки в деле. Быстрый темп, много событий.',
-        duration: 200,
+        title: 'CS2 Pro Players vs DONK',
+        desc: 'Лучшие моменты про-игроков. Видео синхронизировано.',
+        duration: 180,
         badge: 'live',
         teamA: 'NAVI',
         teamB: 'FaZe',
         videoId: 'AVbn4eleGGA',
+        videoStart: 0,
         events: [
-            { time: 12, type: 'kill', label: 'Первый фраг раунда!' },
-            { time: 24, type: 'headshot', label: 'Хедшот через smoke!' },
-            { time: 38, type: 'bomb', label: 'Бомба заложена на B!' },
-            { time: 52, type: 'kill', label: 'Двойной килл с AWP!' },
-            { time: 67, type: 'clutch', label: '1v3 КЛАТЧ! Невероятно!' },
-            { time: 85, type: 'defuse', label: 'Дефуз за 0.3 секунды!' },
-            { time: 100, type: 'kill', label: 'Фраг сквозь стену!' },
-            { time: 118, type: 'headshot', label: 'No-scope хедшот!' },
-            { time: 135, type: 'bomb', label: 'Бомба на A! Ретейк!' },
-            { time: 152, type: 'ace', label: 'ACE! Пять фрагов одного игрока!' },
-            { time: 170, type: 'clutch', label: '1v2 Клатч с ножом!' },
-            { time: 190, type: 'defuse', label: 'Нинзя-дефуз! Матчпоинт!' },
+            // CS2 highlights: kills/moments roughly every 8-15 seconds
+            { time: 8, type: 'kill', label: 'Фраг! Быстрый вход на сайт!' },
+            { time: 22, type: 'headshot', label: 'Хедшот! Через smoke!' },
+            { time: 35, type: 'kill', label: 'Килл с AWP! Невероятный флик!' },
+            { time: 50, type: 'clutch', label: 'КЛАТЧ 1v2! Невероятно!' },
+            { time: 65, type: 'headshot', label: 'Хедшот! One-tap!' },
+            { time: 80, type: 'kill', label: 'Мульти-килл! Тройной!' },
+            { time: 95, type: 'bomb', label: 'Бомба заложена! Ретейк!' },
+            { time: 112, type: 'clutch', label: 'КЛАТЧ! Последний живой!' },
+            { time: 128, type: 'headshot', label: 'No-scope хедшот!' },
+            { time: 145, type: 'ace', label: 'ACE! Пять фрагов подряд!' },
+            { time: 162, type: 'kill', label: 'Килл сквозь стену!' },
+            { time: 175, type: 'clutch', label: 'Финальный клатч! Раунд!' },
         ],
     },
     {
         id: 'demo-nba',
         sport: 'basketball',
-        title: 'NBA Плей-офф — Игра 7',
-        desc: 'Лучшие моменты сезона NBA 2024-25.',
+        title: 'NBA Top Plays 2024-25',
+        desc: 'Лучшие моменты сезона NBA. Видео синхронизировано.',
         duration: 180,
         badge: 'live',
-        teamA: 'Lakers',
-        teamB: 'Celtics',
+        teamA: 'East',
+        teamB: 'West',
         videoId: '28shPp78KsE',
+        videoStart: 0,
         events: [
-            { time: 14, type: 'three', label: '3-очковый с дистанции!' },
-            { time: 30, type: 'dunk', label: 'Мощнейший данк в проходе!' },
-            { time: 48, type: 'block', label: 'Блок-шот на кольце!' },
-            { time: 65, type: 'steal', label: 'Перехват и быстрый отрыв!' },
-            { time: 82, type: 'three', label: '3-очковый баззер-битер!' },
-            { time: 100, type: 'alley', label: 'Аллей-уп с передачи!' },
-            { time: 120, type: 'dunk', label: 'Данк через двоих!' },
-            { time: 140, type: 'block', label: 'Блок на последней секунде!' },
-            { time: 158, type: 'three', label: '3-очковый! Разрыв растёт!' },
-            { time: 172, type: 'dunk', label: 'Финальный данк! Победа!' },
+            // NBA highlights: plays roughly every 8-12 seconds
+            { time: 8, type: 'dunk', label: 'ДАНК! Мощнейший в проходе!' },
+            { time: 22, type: 'three', label: '3-очковый! С дистанции!' },
+            { time: 36, type: 'block', label: 'БЛОК! На кольце!' },
+            { time: 50, type: 'dunk', label: 'Данк через защитника!' },
+            { time: 64, type: 'steal', label: 'Перехват! Быстрый отрыв!' },
+            { time: 78, type: 'three', label: '3-очковый! Баззер-битер!' },
+            { time: 94, type: 'alley', label: 'Аллей-уп! Невероятная передача!' },
+            { time: 110, type: 'dunk', label: 'ПОСТЕР! Данк через двоих!' },
+            { time: 126, type: 'block', label: 'Блок! Последняя секунда!' },
+            { time: 142, type: 'three', label: '3-очковый! С логотипа!' },
+            { time: 160, type: 'dunk', label: 'Томагавк! Разрывной данк!' },
+            { time: 174, type: 'alley', label: 'Аллей-уп! Финал!' },
         ],
     },
 ];
@@ -222,6 +233,7 @@ class GameEngine {
         this.matchScoreB = 0;
         this.tickInterval = null;
         this.startTimestamp = 0;
+        this.getVideoTime = null; // external time source (YouTube API)
         this.onTick = null;
         this.onEvent = null;
         this.onEnd = null;
@@ -253,7 +265,17 @@ class GameEngine {
 
     _tick() {
         if (!this.isPlaying || this.isPaused) return;
-        this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+
+        // Sync with YouTube video if available, otherwise use internal clock
+        if (this.getVideoTime) {
+            try {
+                const vt = this.getVideoTime();
+                if (typeof vt === 'number' && vt >= 0) this.currentTime = vt;
+                else this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+            } catch { this.currentTime = (performance.now() - this.startTimestamp) / 1000; }
+        } else {
+            this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+        }
 
         // Check for events that just happened (for flash display)
         for (const ev of this.match.events) {
@@ -773,15 +795,23 @@ class App {
             demoViz.classList.add('hidden');
             ytContainer.classList.remove('hidden');
             ytContainer.innerHTML = '<div id="yt-player-host"></div>';
+            const self = this;
+            const startSec = match.videoStart || 0;
             try {
                 this.ytPlayer = new YT.Player('yt-player-host', {
                     videoId: match.videoId,
-                    playerVars: { autoplay: 1, mute: 1, controls: 1, modestbranding: 1, rel: 0 },
+                    playerVars: { autoplay: 1, mute: 1, controls: 1, modestbranding: 1, rel: 0, start: startSec },
                     events: {
-                        onReady: (e) => { e.target.playVideo(); },
+                        onReady: (e) => {
+                            e.target.seekTo(startSec, true);
+                            e.target.playVideo();
+                            // Sync game engine time with video playback
+                            self.engine.getVideoTime = () => e.target.getCurrentTime() - startSec;
+                        },
                         onError: () => {
                             ytContainer.classList.add('hidden');
                             demoViz.classList.remove('hidden');
+                            self.engine.getVideoTime = null;
                         },
                     },
                 });
@@ -959,6 +989,7 @@ class App {
     // --- Game End ---
     _onGameEnd() {
         this.sound.end();
+        this.engine.getVideoTime = null;
         document.getElementById('predict-btn').disabled = true;
 
         // Save score
@@ -1061,7 +1092,12 @@ class App {
     _quitGame() {
         this.engine.stop();
         this.engine.isPlaying = false;
+        this.engine.getVideoTime = null;
         clearInterval(this.engine.tickInterval);
+        if (this.ytPlayer && this.ytPlayer.destroy) {
+            try { this.ytPlayer.destroy(); } catch {}
+            this.ytPlayer = null;
+        }
         const ytContainer = document.getElementById('yt-container');
         ytContainer.classList.add('hidden');
         ytContainer.innerHTML = '';
