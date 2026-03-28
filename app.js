@@ -191,8 +191,10 @@ class AIOpponent {
     simulateMatch(events) {
         this.reset();
         for (const ev of events) {
-            // AI predicts with some noise — usually 0.5-4 seconds off
-            const offset = (Math.random() - 0.35) * 5;
+            // AI sometimes misses events (~20% chance)
+            if (Math.random() < 0.2) continue;
+            // AI predicts with noise — 1-6 seconds off
+            const offset = (Math.random() - 0.5) * 8;
             const predTime = ev.time + offset;
             const diff = Math.abs(offset);
             const result = this._evaluate(diff);
@@ -389,14 +391,19 @@ class LeaderboardManager {
 
     getFullBoard() {
         const real = this.getAll();
-        const bots = BOT_PLAYERS.map(b => ({
-            name: b.name,
-            avatar: b.avatar,
-            totalScore: b.base + Math.floor(Math.random() * 80),
-            bestScore: b.base,
-            games: 3 + Math.floor(Math.random() * 10),
-            isBot: true,
-        }));
+        // Stable bot scores seeded by name (no random jumps)
+        const bots = BOT_PLAYERS.map(b => {
+            let hash = 0;
+            for (let i = 0; i < b.name.length; i++) hash = ((hash << 5) - hash) + b.name.charCodeAt(i);
+            return {
+                name: b.name,
+                avatar: b.avatar,
+                totalScore: b.base + Math.abs(hash % 60),
+                bestScore: b.base,
+                games: 3 + Math.abs(hash % 8),
+                isBot: true,
+            };
+        });
         const all = [...real, ...bots];
         all.sort((a, b) => b.totalScore - a.totalScore);
         return all;
@@ -608,6 +615,7 @@ class App {
         this.commentary = new AICommentary();
         this.confetti = null;
         this.ytPlayer = null;
+        this._countdownInterval = null;
         this.currentScreen = 'landing';
         this.selectedMatch = null;
     }
@@ -647,12 +655,22 @@ class App {
 
         $('btn-nickname-ok').addEventListener('click', () => this._submitNickname());
         $('input-nickname').addEventListener('keydown', e => { if (e.key === 'Enter') this._submitNickname(); });
+        // Close nickname modal on Escape or overlay click
+        $('modal-nickname').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-nickname') $('modal-nickname').classList.add('hidden');
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !$('modal-nickname').classList.contains('hidden')) {
+                $('modal-nickname').classList.add('hidden');
+            }
+        });
 
         $('btn-back-landing').addEventListener('click', () => this.showScreen('landing'));
         $('btn-to-lb').addEventListener('click', () => { this._renderFullLB(); this.showScreen('leaderboard'); });
         $('btn-back-select').addEventListener('click', () => this._showMatchSelect());
         $('btn-again').addEventListener('click', () => this._showMatchSelect());
         $('btn-results-lb').addEventListener('click', () => { this._renderFullLB(); this.showScreen('leaderboard'); });
+        $('btn-results-home').addEventListener('click', () => this.showScreen('landing'));
 
         $('predict-btn').addEventListener('click', () => this._onPredict());
         $('btn-quit-game').addEventListener('click', () => this._quitGame());
@@ -668,7 +686,7 @@ class App {
 
     _submitNickname() {
         const input = document.getElementById('input-nickname');
-        const name = input.value.trim();
+        const name = input.value.trim().replace(/[<>&"']/g, '');
         if (!name) return;
         this.lb.setNickname(name);
         document.getElementById('modal-nickname').classList.add('hidden');
@@ -709,6 +727,9 @@ class App {
 
     // --- Countdown ---
     _startCountdown(match) {
+        // Clear any previous countdown
+        if (this._countdownInterval) clearInterval(this._countdownInterval);
+
         this.selectedMatch = match;
         const overlay = document.getElementById('countdown-overlay');
         const numEl = document.getElementById('cd-num');
@@ -721,7 +742,7 @@ class App {
         numEl.style.animation = 'cdPop 0.7s ease-out';
         this.sound.countdown();
 
-        const interval = setInterval(() => {
+        this._countdownInterval = setInterval(() => {
             count--;
             if (count > 0) {
                 numEl.textContent = count;
@@ -737,7 +758,8 @@ class App {
                 numEl.style.animation = 'cdPop 0.7s ease-out';
                 this.sound.go();
             } else {
-                clearInterval(interval);
+                clearInterval(this._countdownInterval);
+                this._countdownInterval = null;
                 overlay.classList.add('hidden');
                 numEl.style.color = '';
                 this._startGame(match);
@@ -799,7 +821,15 @@ class App {
                         onReady: (e) => {
                             e.target.seekTo(startSec, true);
                             e.target.playVideo();
-                            self.engine.getVideoTime = () => e.target.getCurrentTime() - startSec;
+                            self.engine.getVideoTime = () => {
+                                const vt = e.target.getCurrentTime() - startSec;
+                                return vt >= 0 ? vt : 0;
+                            };
+                        },
+                        onStateChange: (e) => {
+                            // Pause/resume engine with video
+                            if (e.data === YT.PlayerState.PAUSED) self.engine.isPaused = true;
+                            else if (e.data === YT.PlayerState.PLAYING) self.engine.isPaused = false;
                         },
                         onError: () => {
                             ytContainer.classList.add('hidden');
@@ -893,12 +923,18 @@ class App {
 
         // Add to event feed
         const feed = document.getElementById('event-feed');
-        const speed = this.engine.match.matchSpeed || MATCH_SPEED;
-        const matchMin = Math.floor(ev.time / speed);
+        const videoMin = Math.floor(ev.time / 60);
+        const videoSec = Math.floor(ev.time % 60);
+        const timeLabel = `${videoMin}:${String(videoSec).padStart(2, '0')}`;
         const isGoal = ev.type === 'goal' || ev.type === 'dunk' || ev.type === 'ace' || ev.type === 'three';
         const item = document.createElement('div');
         item.className = 'feed-item' + (isGoal ? ' goal' : '');
-        item.innerHTML = `<span class="feed-min">${matchMin}'</span> ${ev.label}`;
+        item.textContent = '';
+        const minSpan = document.createElement('span');
+        minSpan.className = 'feed-min';
+        minSpan.textContent = timeLabel;
+        item.appendChild(minSpan);
+        item.appendChild(document.createTextNode(' ' + ev.label));
         feed.prepend(item);
         // Keep only last 3 items visible
         while (feed.children.length > 3) feed.removeChild(feed.lastChild);
@@ -994,6 +1030,10 @@ class App {
     _onGameEnd() {
         this.sound.end();
         this.engine.getVideoTime = null;
+        // Stop YouTube player
+        if (this.ytPlayer) {
+            try { this.ytPlayer.pauseVideo(); } catch {}
+        }
         document.getElementById('predict-btn').disabled = true;
 
         // Save score
@@ -1094,7 +1134,8 @@ class App {
 
     // --- Quit Game ---
     _quitGame() {
-        this.engine.stop();
+        // Disconnect onEnd to prevent _onGameEnd from firing
+        this.engine.onEnd = null;
         this.engine.isPlaying = false;
         this.engine.getVideoTime = null;
         clearInterval(this.engine.tickInterval);
@@ -1133,7 +1174,7 @@ class App {
                     <span class="lb-avatar">${entry.avatar || '🎮'}</span>
                     <div class="lb-info">
                         <div class="lb-name-full">${entry.name}${isMe ? ' (ты)' : ''}</div>
-                        <div class="lb-games">${entry.games} ${entry.games === 1 ? 'игра' : entry.games < 5 ? 'игры' : 'игр'}</div>
+                        <div class="lb-games">${entry.games} ${((g) => { const m = g % 100; if (m >= 11 && m <= 14) return 'игр'; const l = g % 10; return l === 1 ? 'игра' : l >= 2 && l <= 4 ? 'игры' : 'игр'; })(entry.games)}</div>
                     </div>
                     <span class="lb-pts">${entry.totalScore}</span>
                 </div>

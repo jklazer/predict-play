@@ -33,14 +33,19 @@ Bonus: correct event type prediction = x1.0 multiplier, wrong type = x0.6.
 This prototype was built AI-first, leveraging multiple AI systems:
 
 ### In the product:
-- **AI Opponent** — Neural-network-simulated opponent that competes against the player with variable accuracy
-- **AI Commentary Engine** — Real-time ML-powered analysis providing pre-event alerts, pattern recognition, and contextual feedback
-- **Intensity Prediction Model** — Algorithm that detects pre-event patterns and visualizes event probability through the intensity bar
+- **AI Opponent** — Algorithmic opponent with variable accuracy that competes against the player (prototype for future LLM-based opponent)
+- **AI Commentary** — Context-aware commentary system reacting to game state (intensity, events, predictions)
+- **Intensity Algorithm** — Pre-event pattern detection that visualizes event probability through the intensity bar
 - **Adaptive Scoring** — Type-aware scoring system with multipliers
 
 ### In development:
 - **Claude Code** — 95% of the codebase was generated through AI pair programming in a single session
 - **Prompt Engineering** — Iterative refinement of game design, UX copy, and scoring algorithms
+
+### Production roadmap (not yet implemented):
+- **LLM Commentary** — Replace static commentary with OpenAI/Claude API calls for dynamic, context-aware analysis
+- **Computer Vision** — YOLO v8 + MediaPipe for automatic event detection from video streams
+- **Multi-agent orchestration** — LangGraph/CrewAI for event detection, anti-cheat, and matchmaking agents
 
 ## Architecture
 
