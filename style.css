@@ -232,7 +232,7 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
 /* ===== MATCH SELECT ===== */
 .matches-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     width: 100%;
     max-width: 900px;
@@ -262,8 +262,8 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
 .match-sport { font-size: 2rem; margin-bottom: 12px; }
 .match-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
 .match-desc { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
-.match-meta { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-dim); }
-.match-meta span { display: flex; align-items: center; gap: 4px; }
+.match-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-dim); flex-wrap: wrap; }
+.match-meta span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
 .match-badge {
     position: absolute;
     top: 14px;
@@ -319,10 +319,35 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    min-height: 220px;
+    min-height: 240px;
     justify-content: center;
     position: relative;
-    background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+    background:
+        radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 50%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at center, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+    overflow: hidden;
+}
+.demo-viz::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, transparent 49.5%, rgba(255,255,255,0.03) 49.5%, rgba(255,255,255,0.03) 50.5%, transparent 50.5%),
+        linear-gradient(0deg, transparent 49.5%, rgba(255,255,255,0.02) 49.5%, rgba(255,255,255,0.02) 50.5%, transparent 50.5%);
+    pointer-events: none;
+}
+.demo-viz::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 .demo-teams {
     display: flex;
@@ -858,8 +883,13 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
     .demo-clock { font-size: 2.2rem; }
     .team-score { font-size: 2rem; }
     .demo-teams { gap: 20px; }
-    .screen-header { flex-wrap: wrap; gap: 8px; }
+    .screen-header { flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .screen-header h2 { width: 100%; text-align: center; order: -1; }
     .matches-grid { grid-template-columns: 1fr; }
+    .predict-hint { display: none; }
+    .ai-commentary { font-size: 0.78rem; }
+    .event-types { gap: 6px; }
+    .etype-btn { padding: 6px 12px; font-size: 0.78rem; }
 }
 
 /* Scrollbar */
