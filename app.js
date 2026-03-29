@@ -575,10 +575,11 @@ class ClaudeCommentary {
         this.fetchInterval = 12;
         this.pending = false;
         this.apiAvailable = true;
-        // Context injected via setContext(), no window globals
         this._match = null;
         this._getScore = null;
         this._pushComment = null;
+        this._currentTime = 0;
+        this._suppressUntil = 0; // suppress fallback while Claude comment is visible
     }
 
     setContext({ match, getScore, pushComment }) {
@@ -589,12 +590,16 @@ class ClaudeCommentary {
 
     update(state) {
         const { time } = state;
+        this._currentTime = time;
 
         if (this.apiAvailable && !this.pending && time - this.lastFetch >= this.fetchInterval) {
             this.lastFetch = time;
             this.pending = true;
             this._fetchClaudeComment(state);
         }
+
+        // Don't overwrite Claude comment with fallback
+        if (time < this._suppressUntil) return null;
 
         return this.fallback.update(state);
     }
@@ -617,8 +622,7 @@ class ClaudeCommentary {
             const data = await resp.json();
             if (data.text && this._pushComment) {
                 this._pushComment({ text: '🧠 ' + data.text, mood: state.intensity > 0.7 ? 'alert' : '' });
-                this.fallback.lastTime = state.time;
-                this.fallback.minInterval = 15;
+                this._suppressUntil = this._currentTime + 15; // show Claude comment for 15s
             }
         } catch {
             this.fetchInterval = 30;
