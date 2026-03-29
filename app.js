@@ -50,18 +50,19 @@ const MATCHES = [
         videoId: 'DDWYR9Oi_wI',
         videoStart: 40, // skip intro
         events: [
-            // REAL timestamps from video scan via Playwright
-            // Video: DDWYR9Oi_wI (Football Flow, 27:25)
-            { time: 120, type: 'foul', label: 'Опасный фол у штрафной' },
-            { time: 170, type: 'foul', label: 'Фол Демберле на Ди Марии!' },
-            { time: 200, type: 'penalty', label: 'ПЕНАЛЬТИ! Фол в штрафной!' },
-            { time: 247, type: 'goal', label: 'ГОЛ! Месси (пен.) — 1:0!', scoreA: 1 },
-            { time: 328, type: 'goal', label: 'ГОЛ! Ди Мария — комбинация! 2:0!', scoreA: 1 },
-            { time: 500, type: 'foul', label: 'Жёсткий фол Отаменди' },
-            { time: 650, type: 'corner', label: 'Угловой — подача Гризманна' },
-            { time: 800, type: 'foul', label: 'Фол Коло Муани в штрафной' },
-            { time: 920, type: 'goal', label: 'ГОЛ! Мбаппе — удар! 2:1!', scoreB: 1 },
-            { time: 935, type: 'goal', label: 'ГОЛ! Мбаппе (пен.) — 2:2!!', scoreB: 1 },
+            // Calibrated via Playwright video scan 2026-03-29
+            // Video: DDWYR9Oi_wI (Football Flow, 27:25), videoStart=40
+            // game_time = video_seconds - 40
+            { time: 100, type: 'foul', label: 'Опасный фол у штрафной' },
+            { time: 185, type: 'foul', label: 'Фол Демберле на Ди Марии!' },
+            { time: 195, type: 'penalty', label: 'ПЕНАЛЬТИ! Фол в штрафной!' },
+            { time: 206, type: 'goal', label: 'ГОЛ! Месси (пен.) — 1:0!', scoreA: 1 },
+            { time: 305, type: 'goal', label: 'ГОЛ! Ди Мария — комбинация! 2:0!', scoreA: 1 },
+            { time: 420, type: 'foul', label: 'Жёсткий фол Отаменди' },
+            { time: 530, type: 'corner', label: 'Угловой — подача Гризманна' },
+            { time: 618, type: 'goal', label: 'ГОЛ! Мбаппе — удар! 2:1!', scoreB: 1 },
+            { time: 633, type: 'goal', label: 'ГОЛ! Мбаппе (пен.) — 2:2!!', scoreB: 1 },
+            { time: 940, type: 'goal', label: 'ГОЛ! Месси — 3:2! Экстра-тайм!', scoreA: 1 },
         ],
     },
     {
