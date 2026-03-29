@@ -73,49 +73,51 @@ const MATCHES = [
         sport: 'cs2',
         title: 'CS2 Major — Гранд-финал',
         desc: 'Vitality vs TheMongolz. Смотри и предсказывай киллы!',
-        duration: 600, // 10 min
+        duration: 500, // ~8.3 min of action
         badge: 'live',
         teamA: '🟡 Vitality',
         teamB: '🔴 TheMongolz',
         videoId: '2GeYxpuibiE',
-        videoStart: 0,
+        videoStart: 240, // skip intro, start at round action (4:00)
         events: [
-            // CS2 Major - estimated key moments
-            { time: 30, type: 'kill', label: 'Первый фраг раунда!' },
-            { time: 75, type: 'headshot', label: 'Хедшот! Через smoke!' },
-            { time: 120, type: 'bomb', label: 'Бомба заложена! Ретейк!' },
-            { time: 180, type: 'clutch', label: 'КЛАТЧ 1v2! Невероятно!' },
-            { time: 240, type: 'kill', label: 'Мульти-килл! Тройной!' },
-            { time: 310, type: 'ace', label: 'ACE! Пять фрагов подряд!' },
-            { time: 380, type: 'headshot', label: 'No-scope хедшот!' },
-            { time: 450, type: 'clutch', label: 'КЛАТЧ 1v3! Раунд!' },
-            { time: 520, type: 'bomb', label: 'Нинзя-дефуз на последней секунде!' },
-            { time: 580, type: 'clutch', label: 'Матчпоинт! Финальный клатч!' },
+            // REAL timestamps from BLAST Austin Major 2025 transcript
+            // videoStart=240 (4:00), times relative to playback start
+            { time: 29, type: 'kill', label: 'Flamesy открывает! Techno падает первым!' },
+            { time: 52, type: 'clutch', label: 'КЛАТЧ 1v2! 910 затащил раунд!' },
+            { time: 75, type: 'bomb', label: 'Бомба заложена! A-сайт под атакой!' },
+            { time: 113, type: 'headshot', label: 'Wall-bang! Techno пробивает стену!' },
+            { time: 234, type: 'kill', label: '910 снимает Mezi! Важный фраг!' },
+            { time: 278, type: 'kill', label: 'Мульти-килл! TheMongolz давят!' },
+            { time: 303, type: 'kill', label: 'Flamesy забирает трейд!' },
+            { time: 396, type: 'headshot', label: 'Голову сносит! Mzenho мульти-килл!' },
+            { time: 407, type: 'ace', label: 'ТРОЙНОЙ КИЛЛ! Flamesy машина!' },
+            { time: 460, type: 'clutch', label: 'КЛАТЧ 1v1! Techno в зоне! Раунд!' },
         ],
     },
     {
         id: 'nba-finals-2024',
         sport: 'basketball',
         title: 'NBA Finals 2024 — Game 5',
-        desc: 'Celtics чемпионы! Смотри и предсказывай моменты!',
-        duration: 600, // 10 min
+        desc: 'Celtics — чемпионы! Смотри хайлайты и предсказывай!',
+        duration: 570, // ~9.5 min
         badge: 'live',
         teamA: '🟢 Celtics',
         teamB: '🔵 Mavericks',
-        videoId: '28qRcGgOSt4',
-        videoStart: 0,
+        videoId: '17MO0XFSPTk',
+        videoStart: 5, // skip intro card
         events: [
-            // NBA - estimated key moments
-            { time: 30, type: 'dunk', label: 'ДАНК! Мощнейший в проходе!' },
-            { time: 80, type: 'three', label: '3-очковый! С дистанции!' },
-            { time: 140, type: 'block', label: 'БЛОК! На кольце!' },
-            { time: 200, type: 'dunk', label: 'Данк через защитника!' },
-            { time: 260, type: 'steal', label: 'Перехват! Быстрый отрыв!' },
-            { time: 330, type: 'three', label: '3-очковый! Баззер-битер!' },
-            { time: 400, type: 'dunk', label: 'ПОСТЕР! Данк через двоих!' },
-            { time: 470, type: 'block', label: 'Блок на последней секунде!' },
-            { time: 530, type: 'three', label: '3-очковый! С логотипа!' },
-            { time: 580, type: 'dunk', label: 'Финальный данк!' },
+            // NBA Finals 2024 Game 5 highlights (FreeDawkins, 9:59)
+            // Celtics 106-88 Mavericks — championship clincher
+            { time: 25, type: 'three', label: '3-очковый! Tatum открывает счёт!' },
+            { time: 78, type: 'dunk', label: 'ДАНК! Brown в проходе! Мощь!' },
+            { time: 148, type: 'block', label: 'БЛОК! На кольце! Defensive stand!' },
+            { time: 205, type: 'three', label: '3-очковый! Holiday с дистанции!' },
+            { time: 282, type: 'steal', label: 'Перехват! Быстрый отрыв Celtics!' },
+            { time: 340, type: 'dunk', label: 'ДАНК! Brown через защитника!' },
+            { time: 398, type: 'three', label: '3-очковый! Ответный удар Dallas!' },
+            { time: 453, type: 'block', label: 'БЛОК! Tatum отбивает на кольце!' },
+            { time: 510, type: 'dunk', label: 'Poster ДАНК! Через Lively!' },
+            { time: 555, type: 'three', label: 'ЧЕМПИОНСКИЙ 3-очковый! CELTICS!' },
         ],
     },
 ];
@@ -344,14 +346,38 @@ class GameEngine {
     getIntensity() {
         let base = 0.2 + Math.sin(this.currentTime * 0.7) * 0.08 + Math.sin(this.currentTime * 1.3) * 0.05;
 
+        // Real event signals (weaker to avoid being a cheat sheet)
         for (const ev of this.match.events) {
             if (ev._fired) continue;
             const dt = ev.time - this.currentTime;
-            if (dt > 0 && dt < 10) {
-                const factor = 1 - dt / 10;
-                base += factor * factor * 0.55;
+            if (dt > 0 && dt < 8) {
+                const factor = 1 - dt / 8;
+                base += factor * factor * 0.35; // reduced from 0.55
             } else if (dt >= -1 && dt <= 0) {
                 base = 1.0;
+            }
+        }
+
+        // Decoy spikes — false peaks that don't correspond to real events
+        // Seeded from match duration to be deterministic but unpredictable
+        if (this.match && !this._decoys) {
+            this._decoys = [];
+            const seed = this.match.duration * 7 + this.match.events.length * 13;
+            const eventTimes = new Set(this.match.events.map(e => e.time));
+            for (let i = 0; i < 6; i++) {
+                const t = ((seed * (i + 1) * 31) % (this.match.duration - 40)) + 20;
+                // Only add if not near a real event (>15s away)
+                const nearReal = [...eventTimes].some(et => Math.abs(et - t) < 15);
+                if (!nearReal) this._decoys.push(t);
+            }
+        }
+        if (this._decoys) {
+            for (const dt of this._decoys) {
+                const diff = dt - this.currentTime;
+                if (diff > 0 && diff < 6) {
+                    const factor = 1 - diff / 6;
+                    base += factor * factor * 0.4; // comparable to real signals
+                }
             }
         }
 
@@ -540,57 +566,61 @@ class AICommentary {
 }
 
 // ==================== CLAUDE API COMMENTARY ====================
-const CLAUDE_PROXY = 'http://5.129.230.72:8899/api/comment';
+const CLAUDE_PROXY = 'https://5-129-230-72.sslip.io/api/comment';
 
 class ClaudeCommentary {
     constructor() {
         this.fallback = new AICommentary();
         this.lastFetch = 0;
-        this.fetchInterval = 12; // seconds between API calls
+        this.fetchInterval = 12;
         this.pending = false;
-        this.apiAvailable = true; // set to false on error
+        this.apiAvailable = true;
+        // Context injected via setContext(), no window globals
+        this._match = null;
+        this._getScore = null;
+        this._pushComment = null;
+    }
+
+    setContext({ match, getScore, pushComment }) {
+        this._match = match;
+        this._getScore = getScore;
+        this._pushComment = pushComment;
     }
 
     update(state) {
-        const { time, intensity } = state;
+        const { time } = state;
 
-        // Try Claude API every fetchInterval seconds
         if (this.apiAvailable && !this.pending && time - this.lastFetch >= this.fetchInterval) {
             this.lastFetch = time;
             this.pending = true;
             this._fetchClaudeComment(state);
         }
 
-        // Always return fallback for immediate display
         return this.fallback.update(state);
     }
 
     async _fetchClaudeComment(state) {
         try {
-            const match = window._currentMatch;
+            const score = this._getScore ? this._getScore() : { a: 0, b: 0 };
             const resp = await fetch(CLAUDE_PROXY, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    teamA: match?.teamA || '?',
-                    teamB: match?.teamB || '?',
-                    score: `${window._matchScoreA || 0}:${window._matchScoreB || 0}`,
+                    teamA: this._match?.teamA || '?',
+                    teamB: this._match?.teamB || '?',
+                    score: `${score.a}:${score.b}`,
                     matchMin: Math.floor(state.time / 60),
                     intensity: Math.round(state.intensity * 100),
                 }),
             });
             if (!resp.ok) throw new Error('API error');
             const data = await resp.json();
-            if (data.text) {
-                // Push AI comment to UI and suppress fallback for a while
-                if (window._setCommentaryFn) {
-                    window._setCommentaryFn({ text: '🧠 ' + data.text, mood: state.intensity > 0.7 ? 'alert' : '' });
-                    this.fallback.lastTime = state.time; // prevent fallback from overwriting
-                    this.fallback.minInterval = 15; // give AI comment time to be visible
-                }
+            if (data.text && this._pushComment) {
+                this._pushComment({ text: '🧠 ' + data.text, mood: state.intensity > 0.7 ? 'alert' : '' });
+                this.fallback.lastTime = state.time;
+                this.fallback.minInterval = 15;
             }
         } catch {
-            // Silently fall back — don't retry for 30s
             this.fetchInterval = 30;
         } finally {
             this.pending = false;
@@ -667,6 +697,13 @@ class Confetti {
     }
 }
 
+// ==================== HELPERS ====================
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 // ==================== UI CONTROLLER ====================
 class App {
     constructor() {
@@ -680,6 +717,7 @@ class App {
         this._countdownInterval = null;
         this.currentScreen = 'landing';
         this.selectedMatch = null;
+        this._lastVideoTime = 0; // for seek detection
     }
 
     init() {
@@ -860,11 +898,12 @@ class App {
         document.getElementById('pred-list').innerHTML = '';
         document.getElementById('predict-btn').disabled = false;
 
-        // Expose match state for Claude API
-        window._currentMatch = match;
-        window._matchScoreA = 0;
-        window._matchScoreB = 0;
-        window._setCommentaryFn = (c) => this._setCommentary(c);
+        // Inject context into commentary (no window globals)
+        this.commentary.setContext({
+            match,
+            getScore: () => ({ a: this.engine.matchScoreA, b: this.engine.matchScoreB }),
+            pushComment: (c) => this._setCommentary(c),
+        });
 
         // Setup engine callbacks
         this.engine.onTick = (t) => this._onTick(t);
@@ -895,9 +934,17 @@ class App {
                             };
                         },
                         onStateChange: (e) => {
-                            // Pause/resume engine with video
                             if (e.data === YT.PlayerState.PAUSED) self.engine.isPaused = true;
-                            else if (e.data === YT.PlayerState.PLAYING) self.engine.isPaused = false;
+                            else if (e.data === YT.PlayerState.PLAYING) {
+                                self.engine.isPaused = false;
+                                // Detect seek: if time jumped >3s, apply brief cooldown
+                                const vt = e.target.getCurrentTime() - startSec;
+                                if (Math.abs(vt - self._lastVideoTime) > 3) {
+                                    self.engine.cooldown = true;
+                                    setTimeout(() => { self.engine.cooldown = false; }, 2000);
+                                }
+                                self._lastVideoTime = vt;
+                            }
                         },
                         onError: () => {
                             ytContainer.classList.add('hidden');
@@ -968,8 +1015,6 @@ class App {
         // Team scores
         document.getElementById('ts-a').textContent = this.engine.matchScoreA;
         document.getElementById('ts-b').textContent = this.engine.matchScoreB;
-        window._matchScoreA = this.engine.matchScoreA;
-        window._matchScoreB = this.engine.matchScoreB;
 
         // AI Commentary
         const comment = this.commentary.update({
@@ -1086,10 +1131,11 @@ class App {
         const container = document.getElementById('mini-lb');
         container.innerHTML = board.map((entry, i) => {
             const isMe = entry.name === this.lb.nickname;
+            const safeName = escapeHtml(entry.name);
             return `
                 <div class="lb-row${isMe ? ' me' : ''}">
                     <span class="lb-rank">${i + 1}</span>
-                    <span class="lb-name">${isMe ? '→ ' : ''}${entry.name}</span>
+                    <span class="lb-name">${isMe ? '→ ' : ''}${safeName}</span>
                     <span class="lb-pts">${entry.totalScore}</span>
                 </div>
             `;
@@ -1237,13 +1283,14 @@ class App {
         const container = document.getElementById('lb-full');
         container.innerHTML = board.map((entry, i) => {
             const isMe = entry.name === this.lb.nickname;
+            const safeName = escapeHtml(entry.name);
             const rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
             return `
                 <div class="lb-full-row${isMe ? ' me' : ''}">
                     <span class="lb-rank">${rankEmoji}</span>
-                    <span class="lb-avatar">${entry.avatar || '🎮'}</span>
+                    <span class="lb-avatar">${escapeHtml(entry.avatar || '🎮')}</span>
                     <div class="lb-info">
-                        <div class="lb-name-full">${entry.name}${isMe ? ' (ты)' : ''}</div>
+                        <div class="lb-name-full">${safeName}${isMe ? ' (ты)' : ''}</div>
                         <div class="lb-games">${entry.games} ${((g) => { const m = g % 100; if (m >= 11 && m <= 14) return 'игр'; const l = g % 10; return l === 1 ? 'игра' : l >= 2 && l <= 4 ? 'игры' : 'игр'; })(entry.games)}</div>
                     </div>
                     <span class="lb-pts">${entry.totalScore}</span>
