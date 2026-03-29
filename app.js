@@ -343,19 +343,19 @@ class GameEngine {
     getIntensity() {
         let base = 0.2 + Math.sin(this.currentTime * 0.7) * 0.08 + Math.sin(this.currentTime * 1.3) * 0.05;
 
-        // Real event signals (weaker to avoid being a cheat sheet)
+        // Real event signals — stronger than decoys so bar doesn't mislead
         for (const ev of this.match.events) {
             if (ev._fired) continue;
             const dt = ev.time - this.currentTime;
             if (dt > 0 && dt < 8) {
                 const factor = 1 - dt / 8;
-                base += factor * factor * 0.35; // reduced from 0.55
+                base += factor * factor * 0.5;
             } else if (dt >= -1 && dt <= 0) {
                 base = 1.0;
             }
         }
 
-        // Decoy spikes — false peaks that don't correspond to real events
+        // Decoy spikes — false peaks weaker than real events
         // Seeded from match duration to be deterministic but unpredictable
         if (this.match && !this._decoys) {
             this._decoys = [];
@@ -373,7 +373,7 @@ class GameEngine {
                 const diff = dt - this.currentTime;
                 if (diff > 0 && diff < 6) {
                     const factor = 1 - diff / 6;
-                    base += factor * factor * 0.4; // comparable to real signals
+                    base += factor * factor * 0.3; // weaker than real signals (0.3 < 0.5)
                 }
             }
         }
@@ -494,7 +494,10 @@ class AICommentary {
     constructor() {
         this.lastTime = -10;
         this.minInterval = 5;
+        this.sport = null;
     }
+
+    setSport(sport) { this.sport = sport; }
 
     update(state) {
         const { time, intensity, eventsFound, totalEvents, score, duration, aiScore } = state;
@@ -530,14 +533,30 @@ class AICommentary {
                 comment = `🏁 Финальный отрезок! Осталось ${totalEvents - eventsFound} событий — каждое на вес золота`;
                 mood = 'alert';
             } else {
-                const general = [
-                    ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                    [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
-                    ['🤖 Модель обрабатывает телеметрию матча в реальном времени...', ''],
-                    [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
-                    ['🧠 Deep Learning модель анализирует динамику команд...', ''],
-                    ['📡 Computer Vision pipeline: детекция движений, трекинг мяча, анализ позиций', ''],
-                ];
+                const sportMsgs = {
+                    football: [
+                        ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
+                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
+                        ['🤖 CV-модель анализирует позиции игроков и траекторию мяча...', ''],
+                        [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
+                        ['🧠 Deep Learning анализирует динамику атаки и обороны...', ''],
+                    ],
+                    cs2: [
+                        ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
+                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
+                        ['🤖 Модель анализирует экономику раундов и позиции игроков...', ''],
+                        [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
+                        ['🧠 ML-детектор отслеживает перестрелки и ротации...', ''],
+                    ],
+                    basketball: [
+                        ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
+                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
+                        ['🤖 CV-модель трекает мяч и позиции игроков на площадке...', ''],
+                        [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
+                        ['🧠 ML-анализ: быстрый отрыв или позиционная атака?', ''],
+                    ],
+                };
+                const general = sportMsgs[this.sport] || sportMsgs.football;
                 const pick = general[Math.floor(Math.random() * general.length)];
                 comment = pick[0]; mood = pick[1];
             }
@@ -610,6 +629,7 @@ class ClaudeCommentary {
                 body: JSON.stringify({
                     teamA: this._match?.teamA || '?',
                     teamB: this._match?.teamB || '?',
+                    sport: this._match?.sport || 'football',
                     score: `${score.a}:${score.b}`,
                     matchMin: Math.floor(state.time / 60),
                     intensity: Math.round(state.intensity * 100),
@@ -958,6 +978,7 @@ class App {
 
         // Reset commentary and inject context
         this.commentary = new ClaudeCommentary();
+        this.commentary.fallback.setSport(match.sport);
         this.commentary.setContext({
             match,
             getScore: () => ({ a: this.engine.matchScoreA, b: this.engine.matchScoreB }),

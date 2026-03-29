@@ -35,6 +35,7 @@ This prototype was built AI-first, leveraging multiple AI systems:
 ### In the product:
 - **AI Opponent** — Algorithmic opponent with variable accuracy that competes against the player (prototype for future LLM-based opponent)
 - **AI Commentary** — Context-aware commentary system reacting to game state (intensity, events, predictions)
+- **LLM Commentary** — Real-time contextual commentary powered by OpenAI GPT-4o-mini via HTTPS proxy, with automatic fallback to static commentary
 - **Intensity Algorithm** — Pre-event pattern detection that visualizes event probability through the intensity bar
 - **Adaptive Scoring** — Type-aware scoring system with multipliers
 
@@ -43,7 +44,6 @@ This prototype was built AI-first, leveraging multiple AI systems:
 - **Prompt Engineering** — Iterative refinement of game design, UX copy, and scoring algorithms
 
 ### Production roadmap (not yet implemented):
-- **LLM Commentary** — Replace static commentary with OpenAI/Claude API calls for dynamic, context-aware analysis
 - **Computer Vision** — YOLO v8 + MediaPipe for automatic event detection from video streams
 - **Multi-agent orchestration** — LangGraph/CrewAI for event detection, anti-cheat, and matchmaking agents
 
@@ -117,6 +117,7 @@ YouTube/Twitch Stream → WebSocket → CV Pipeline
 | Audio | Web Audio API (procedural sound) |
 | Storage | localStorage (prototype) → PostgreSQL + Redis (production) |
 | AI | Custom scoring engine, simulated ML commentary |
+| AI Backend | OpenAI GPT-4o-mini, FastAPI, Caddy (HTTPS) |
 | Deploy | GitHub Pages (static) |
 
 ## Development
