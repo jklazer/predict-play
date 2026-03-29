@@ -62,7 +62,7 @@ const MATCHES = [
             { time: 530, type: 'corner', label: 'Угловой — подача Гризманна' },
             { time: 618, type: 'goal', label: 'ГОЛ! Мбаппе — удар! 2:1!', scoreB: 1 },
             { time: 633, type: 'goal', label: 'ГОЛ! Мбаппе (пен.) — 2:2!!', scoreB: 1 },
-            { time: 940, type: 'goal', label: 'ГОЛ! Месси — 3:2! Экстра-тайм!', scoreA: 1 },
+            { time: 985, type: 'goal', label: 'ГОЛ! Месси — 3:2! Экстра-тайм!', scoreA: 1 },
         ],
     },
     {
