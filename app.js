@@ -9,8 +9,6 @@ const SPORTS = {
         name: 'Футбол',
         types: [
             { id: 'goal', label: '⚽ Гол', icon: '⚽' },
-            { id: 'yellow', label: '🟨 Жёлтая', icon: '🟨' },
-            { id: 'red', label: '🟥 Красная', icon: '🟥' },
             { id: 'foul', label: '🦵 Фол', icon: '🦵' },
             { id: 'corner', label: '🚩 Угловой', icon: '🚩' },
             { id: 'penalty', label: '⚡ Пенальти', icon: '⚡' },
@@ -23,7 +21,6 @@ const SPORTS = {
             { id: 'kill', label: '💀 Килл', icon: '💀' },
             { id: 'headshot', label: '🎯 Хедшот', icon: '🎯' },
             { id: 'bomb', label: '💣 Бомба', icon: '💣' },
-            { id: 'defuse', label: '🔧 Дефуз', icon: '🔧' },
             { id: 'clutch', label: '🔥 Клатч', icon: '🔥' },
             { id: 'ace', label: '⭐ ACE', icon: '⭐' },
         ],
@@ -36,7 +33,6 @@ const SPORTS = {
             { id: 'dunk', label: '💥 Данк', icon: '💥' },
             { id: 'block', label: '🖐 Блок', icon: '🖐' },
             { id: 'steal', label: '🤏 Перехват', icon: '🤏' },
-            { id: 'alley', label: '🎭 Аллей-уп', icon: '🎭' },
         ],
     },
 };
@@ -72,7 +68,7 @@ const MATCHES = [
         id: 'cs2-highlights',
         sport: 'cs2',
         title: 'CS2 Major — Гранд-финал',
-        desc: 'Vitality vs TheMongolz. Смотри и предсказывай киллы!',
+        desc: 'Vitality vs TheMongolz. Смотри и предсказывай моменты!',
         duration: 500, // ~8.3 min of action
         badge: 'live',
         teamA: '🟡 Vitality',
@@ -90,7 +86,7 @@ const MATCHES = [
             { time: 278, type: 'kill', label: 'Мульти-килл! TheMongolz давят!' },
             { time: 303, type: 'kill', label: 'Flamesy забирает трейд!' },
             { time: 396, type: 'headshot', label: 'Голову сносит! Mzenho мульти-килл!' },
-            { time: 407, type: 'ace', label: 'ТРОЙНОЙ КИЛЛ! Flamesy машина!' },
+            { time: 407, type: 'ace', label: 'ACE! Flamesy закрывает раунд!' },
             { time: 460, type: 'clutch', label: 'КЛАТЧ 1v1! Techno в зоне! Раунд!' },
         ],
     },
