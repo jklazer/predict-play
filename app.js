@@ -902,13 +902,6 @@ class App {
         document.getElementById('pred-list').innerHTML = '';
         document.getElementById('predict-btn').disabled = false;
 
-        // Inject context into commentary (no window globals)
-        this.commentary.setContext({
-            match,
-            getScore: () => ({ a: this.engine.matchScoreA, b: this.engine.matchScoreB }),
-            pushComment: (c) => this._setCommentary(c),
-        });
-
         // Setup engine callbacks
         this.engine.onTick = (t) => this._onTick(t);
         this.engine.onEvent = (ev) => this._onMatchEvent(ev);
@@ -966,8 +959,13 @@ class App {
             ytContainer.classList.add('hidden');
         }
 
-        // Reset commentary
+        // Reset commentary and inject context
         this.commentary = new ClaudeCommentary();
+        this.commentary.setContext({
+            match,
+            getScore: () => ({ a: this.engine.matchScoreA, b: this.engine.matchScoreB }),
+            pushComment: (c) => this._setCommentary(c),
+        });
         this._setCommentary({ text: '🤖 Нейросеть инициализирована. Анализирую матч в реальном времени...', mood: '' });
 
         // Start AI simulation
