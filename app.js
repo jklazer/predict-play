@@ -51,19 +51,18 @@ const MATCHES = [
         teamA: '🇦🇷 Аргентина',
         teamB: '🇫🇷 Франция',
         videoId: 'DDWYR9Oi_wI',
-        videoStart: 625, // Mbappe comeback segment (YT ~10:25)
+        videoStart: 622, // Mbappe comeback (YT ~10:22, 3s earlier for clean start)
         events: [
-            // Hand-verified from transcript. YT times - 625, adjusted -1.5s for commentator delay
+            // Transcript times - 622 + 3s visual delay. Events fire when VISIBLE on screen.
             // Score entering segment: Argentina 2:0 France
-            { time: 5, type: 'foul', label: 'ФОЛ! Тюрам сбит у штрафной!' },
-            { time: 9, type: 'penalty', label: 'ПЕНАЛЬТИ! Судья указывает на точку!' },
-            { time: 17, type: 'foul', label: 'Мбаппе готовится к удару!' },
-            { time: 28, type: 'goal', label: 'ГОЛ! Мбаппе с пенальти — 2:1!', scoreB: 1 },
-            { time: 43, type: 'corner', label: 'Подача! Франция атакует!' },
-            { time: 51, type: 'goal', label: 'ГОЛ! Мбаппе залп в угол — 2:2!!', scoreB: 1 },
-            { time: 61, type: 'foul', label: 'Фол! Кома останавливает атаку!' },
-            { time: 75, type: 'corner', label: 'Угловой! Франция давит!' },
-            { time: 84, type: 'foul', label: 'Аргентина в панике! Жёсткий фол!' },
+            { time: 10, type: 'foul', label: 'ФОЛ! Тюрам сбит у штрафной!' },
+            { time: 15, type: 'penalty', label: 'ПЕНАЛЬТИ! Судья указывает на точку!' },
+            { time: 22, type: 'foul', label: 'Мбаппе готовится к удару!' },
+            { time: 35, type: 'goal', label: 'ГОЛ! Мбаппе с пенальти — 2:1!', scoreB: 1 },
+            { time: 48, type: 'corner', label: 'Подача! Франция атакует!' },
+            { time: 57, type: 'goal', label: 'ГОЛ! Мбаппе залп в угол — 2:2!!', scoreB: 1 },
+            { time: 67, type: 'foul', label: 'Фол! Кома останавливает атаку!' },
+            { time: 80, type: 'corner', label: 'Угловой! Франция давит!' },
         ],
     },
     {
@@ -76,23 +75,21 @@ const MATCHES = [
         teamA: '🟡 Vitality',
         teamB: '🔴 TheMongolz',
         videoId: '2GeYxpuibiE',
-        videoStart: 269, // Round action start (YT ~4:29)
+        videoStart: 266, // Round start (YT ~4:26, 3s earlier for clean intro)
         events: [
-            // From BLAST Austin Major 2025 transcript, times = YT - 269, adjusted -1.5s
+            // Transcript times - 266 + 3s visual delay. Events fire when VISIBLE on screen.
             // Round 1: TheMongolz attack A site
-            { time: 0, type: 'kill', label: 'Flamesy открывает! Techno падает!' },
-            { time: 5, type: 'kill', label: '910 находит щель! Фраг!' },
-            { time: 14, type: 'kill', label: 'Senzu выравнивает! Трейд!' },
-            { time: 16, type: 'kill', label: '2v2! Обмен фрагами!' },
-            { time: 24, type: 'clutch', label: 'КЛАТЧ! 910 один против двоих!' },
-            { time: 45, type: 'bomb', label: 'Бомба заложена на A!' },
-            { time: 50, type: 'kill', label: 'Robs лезет на плент! Фраг!' },
-            { time: 56, type: 'kill', label: 'Robs знает как побеждать!' },
+            { time: 7, type: 'kill', label: 'Flamesy открывает! Techno падает!' },
+            { time: 12, type: 'kill', label: '910 находит щель! Фраг!' },
+            { time: 21, type: 'kill', label: 'Senzu выравнивает! Трейд!' },
+            { time: 23, type: 'kill', label: '2v2! Обмен фрагами!' },
+            { time: 31, type: 'clutch', label: 'КЛАТЧ! 910 один против двоих!' },
+            { time: 52, type: 'bomb', label: 'Бомба заложена на A!' },
+            { time: 58, type: 'kill', label: 'Robs лезет на плент! Фраг!' },
+            { time: 64, type: 'kill', label: 'Robs знает как побеждать!' },
             // Round 2: Vitality retake
-            { time: 75, type: 'kill', label: 'Apex побеждает в дуэли!' },
-            { time: 80, type: 'kill', label: 'Тайминг через коннектор!' },
-            { time: 85, type: 'headshot', label: 'WALLBANG! Techno через стену!' },
-            { time: 88, type: 'kill', label: 'Vitality закрывают раунд!' },
+            { time: 82, type: 'kill', label: 'Apex побеждает в дуэли!' },
+            { time: 87, type: 'headshot', label: 'WALLBANG! Techno через стену!' },
         ],
     },
     {
@@ -105,21 +102,21 @@ const MATCHES = [
         teamA: '🟢 Celtics',
         teamB: '🔵 Mavericks',
         videoId: '17MO0XFSPTk',
-        videoStart: 410, // Late-game action (YT ~6:50)
+        videoStart: 407, // Late-game action (YT ~6:47, 3s earlier)
         events: [
-            // From FreeDawkins transcript, times = YT - 410, adjusted -1.5s
+            // Transcript times - 407 + 3s visual delay. Events fire when VISIBLE on screen.
             // Diverse action: blocks, steals, threes, dunks
-            { time: 4, type: 'dunk', label: 'Дончич забивает через контакт!' },
-            { time: 11, type: 'block', label: 'БЛОК! White накрывает на кольце!' },
-            { time: 25, type: 'three', label: '3-очковый! Дончич с дистанции!' },
-            { time: 31, type: 'three', label: 'White отвечает трёхочковым!' },
-            { time: 40, type: 'dunk', label: 'Дончич в проходе! Финиш!' },
-            { time: 47, type: 'three', label: 'Tatum банк-шот плюс фол!' },
-            { time: 53, type: 'three', label: 'Irving попадает трёхочковый!' },
-            { time: 60, type: 'dunk', label: 'Tatum крутит и забивает!' },
-            { time: 66, type: 'three', label: 'Дончич не сдаётся! Тройка!' },
-            { time: 78, type: 'steal', label: 'ПЕРЕХВАТ! White крадёт мяч!' },
-            { time: 82, type: 'dunk', label: 'Tatum в отрыв! Финишер!' },
+            { time: 9, type: 'dunk', label: 'Дончич забивает через контакт!' },
+            { time: 18, type: 'block', label: 'БЛОК! White накрывает на кольце!' },
+            { time: 32, type: 'three', label: '3-очковый! Дончич с дистанции!' },
+            { time: 38, type: 'three', label: 'White отвечает трёхочковым!' },
+            { time: 46, type: 'dunk', label: 'Дончич в проходе! Финиш!' },
+            { time: 52, type: 'three', label: 'Tatum банк-шот плюс фол!' },
+            { time: 58, type: 'three', label: 'Irving попадает трёхочковый!' },
+            { time: 65, type: 'dunk', label: 'Tatum крутит и забивает!' },
+            { time: 72, type: 'three', label: 'Дончич не сдаётся! Тройка!' },
+            { time: 83, type: 'steal', label: 'ПЕРЕХВАТ! White крадёт мяч!' },
+            { time: 87, type: 'dunk', label: 'Tatum в отрыв! Финишер!' },
         ],
     },
 ];
@@ -544,37 +541,19 @@ class AICommentary {
         } else {
             const progress = time / duration;
             if (progress > 0.48 && progress < 0.52) {
-                comment = `⏱ Экватор матча. Найдено ${eventsFound}/${totalEvents} событий. AI Predictor: ${aiScore} очков`;
+                comment = `⏱ Экватор. ${eventsFound}/${totalEvents} событий. AI: ${aiScore} очков`;
                 mood = '';
             } else if (progress > 0.82 && progress < 0.85) {
-                comment = `🏁 Финальный отрезок! Осталось ${totalEvents - eventsFound} событий — каждое на вес золота`;
+                comment = `🏁 Финиш! Осталось ${totalEvents - eventsFound} событий`;
                 mood = 'alert';
             } else {
-                const sportMsgs = {
-                    football: [
-                        ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти?`, ''],
-                        ['🤖 Следи за атакующими комбинациями — они предвещают голы', ''],
-                        [`📊 Ваш текущий счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
-                        ['🧠 Внимание на штрафные и угловые — пиковые моменты!', ''],
-                    ],
-                    cs2: [
-                        ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти?`, ''],
-                        ['🤖 Закупка раунда и позиции — ключ к предсказанию фрагов', ''],
-                        [`📊 Ваш текущий счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
-                        ['🧠 Перестрелки и ротации — следи за перемещениями!', ''],
-                    ],
-                    basketball: [
-                        ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти?`, ''],
-                        ['🤖 Быстрый отрыв или позиционная атака? Следи за темпом!', ''],
-                        [`📊 Ваш текущий счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
-                        ['🧠 Данки и трёхочковые — самые частые события в хайлайтах', ''],
-                    ],
-                };
-                const general = sportMsgs[this.sport] || sportMsgs.football;
-                const pick = general[Math.floor(Math.random() * general.length)];
+                // Only stats — no generic sport phrases that mismatch video
+                const msgs = [
+                    [`📊 Счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
+                    [`🏆 AI Predictor: ${aiScore} очков — сможешь обойти?`, ''],
+                    ['💡 Следи за полосой интенсивности — она растёт перед событием', ''],
+                ];
+                const pick = msgs[Math.floor(Math.random() * msgs.length)];
                 comment = pick[0]; mood = pick[1];
             }
             this.minInterval = 7;
@@ -624,15 +603,8 @@ class ClaudeCommentary {
         const { time } = state;
         this._currentTime = time;
 
-        if (this.apiAvailable && !this.pending && time - this.lastFetch >= this.fetchInterval) {
-            this.lastFetch = time;
-            this.pending = true;
-            this._fetchClaudeComment(state);
-        }
-
-        // Don't overwrite Claude comment with fallback
-        if (time < this._suppressUntil) return null;
-
+        // No GPT API calls — only event-driven + intensity commentary
+        // GPT produces generic phrases that don't match what's visible on video
         return this.fallback.update(state);
     }
 
