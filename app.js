@@ -836,17 +836,22 @@ class App {
         const grid = document.getElementById('matches-grid');
         grid.innerHTML = MATCHES.map(m => {
             const sport = SPORTS[m.sport];
-            const matchMins = Math.floor(m.duration / 60);
+            const matchSecs = m.duration;
+            const matchTime = matchSecs >= 60 ? `${Math.floor(matchSecs / 60)}:${String(matchSecs % 60).padStart(2, '0')}` : `${matchSecs}с`;
             return `
                 <div class="match-card" data-id="${m.id}">
-                    <span class="match-badge badge-${m.badge}">${m.badge === 'live' ? '● LIVE' : 'DEMO'}</span>
+                    <span class="match-badge badge-${m.badge}">${m.badge === 'live' ? 'LIVE' : 'DEMO'}</span>
                     <div class="match-card-inner">
-                        <div class="match-sport">${sport.icon}</div>
+                        <div class="match-teams-row">
+                            <span class="match-team">${m.teamA}</span>
+                            <span class="match-vs">vs</span>
+                            <span class="match-team">${m.teamB}</span>
+                        </div>
                         <div class="match-title">${m.title}</div>
                         <div class="match-desc">${m.desc}</div>
                         <div class="match-meta">
-                            <span>⏱ ${matchMins} мин</span>
-                            <span>🎯 ${m.events.length} событий</span>
+                            <span>&#9716; ${matchTime}</span>
+                            <span>&#127919; ${m.events.length} событий</span>
                             <span>${sport.name}</span>
                         </div>
                     </div>
