@@ -2,6 +2,9 @@
    PredictPlay — Game Engine & UI
    ======================================================== */
 
+// ==================== CONFIG ====================
+const EVENTS_API = 'https://5-129-230-72.sslip.io';
+
 // ==================== DATA ====================
 const SPORTS = {
     football: {
@@ -79,7 +82,8 @@ const MATCHES = [
         events: [
             // REAL timestamps from BLAST Austin Major 2025 transcript
             // videoStart=240 (4:00), times relative to playback start
-            { time: 29, type: 'kill', label: 'Flamesy открывает! Techno падает первым!' },
+            { time: 29, type: 'headshot', label: 'ХЕДШОТ! Flamesy снимает Techno!' },
+            { time: 35, type: 'kill', label: 'Ответный фраг! Второй падает!' },
             { time: 52, type: 'clutch', label: 'КЛАТЧ 1v2! 910 затащил раунд!' },
             { time: 75, type: 'bomb', label: 'Бомба заложена! A-сайт под атакой!' },
             { time: 113, type: 'headshot', label: 'Wall-bang! Techno пробивает стену!' },
@@ -118,6 +122,12 @@ const MATCHES = [
         ],
     },
 ];
+
+// Fallback events (used when API is unavailable)
+const FALLBACK_EVENTS = {};
+for (const m of MATCHES) {
+    FALLBACK_EVENTS[m.id] = m.events || [];
+}
 
 // Simulated leaderboard players
 const BOT_PLAYERS = [
@@ -208,7 +218,7 @@ class AIOpponent {
         if (diff <= 2) return { pts: 60, label: 'GREAT', quality: 'great' };
         if (diff <= 3) return { pts: 40, label: 'GOOD', quality: 'good' };
         if (diff <= 5) return { pts: 20, label: 'OK', quality: 'ok' };
-        return { pts: 0, label: 'MISS', quality: 'miss' };
+        return { pts: 0, label: 'ДАЛЕКО', quality: 'miss' };
     }
 }
 
@@ -265,12 +275,17 @@ class GameEngine {
         if (this.getVideoTime) {
             try {
                 const vt = this.getVideoTime();
-                if (typeof vt === 'number' && vt >= 0) this.currentTime = vt;
-                else this.currentTime = (performance.now() - this.startTimestamp) / 1000;
+                const fallback = (performance.now() - this.startTimestamp) / 1000;
+                // Sanity: reject jumps > 30s ahead (YouTube API glitch)
+                if (typeof vt === 'number' && vt >= 0 && vt <= fallback + 30) this.currentTime = vt;
+                else this.currentTime = fallback;
             } catch { this.currentTime = (performance.now() - this.startTimestamp) / 1000; }
         } else {
             this.currentTime = (performance.now() - this.startTimestamp) / 1000;
         }
+
+        // Tick UI before firing events so getIntensity() sees the spike at dt=0
+        if (this.onTick) this.onTick(this.currentTime);
 
         // Check for events that just happened (for flash display)
         for (const ev of this.match.events) {
@@ -281,8 +296,6 @@ class GameEngine {
                 if (this.onEvent) this.onEvent(ev);
             }
         }
-
-        if (this.onTick) this.onTick(this.currentTime);
 
         if (this.currentTime >= this.match.duration) {
             this.stop();
@@ -321,12 +334,15 @@ class GameEngine {
             else if (d <= 2) base = { pts: 60, label: 'GREAT!', quality: 'great' };
             else if (d <= 3) base = { pts: 40, label: 'GOOD', quality: 'good' };
             else if (d <= 5) base = { pts: 20, label: 'OK', quality: 'ok' };
-            else base = { pts: 0, label: 'MISS', quality: 'miss' };
+            else base = { pts: 0, label: 'ДАЛЕКО', quality: 'miss' };
 
             const pts = Math.round(base.pts * bonus);
             result = { ...base, pts, diff: d, typeMatch };
-            this.claimedEvents.add(nearest.index);
-            if (pts > 0) this.eventsFound++;
+            // Only claim event if player scored — don't waste events on MISS
+            if (pts > 0) {
+                this.claimedEvents.add(nearest.index);
+                this.eventsFound++;
+            }
         }
 
         this.score += result.pts;
@@ -349,7 +365,7 @@ class GameEngine {
             const dt = ev.time - this.currentTime;
             if (dt > 0 && dt < 8) {
                 const factor = 1 - dt / 8;
-                base += factor * factor * 0.5;
+                base += factor * factor * 0.65;
             } else if (dt >= -1 && dt <= 0) {
                 base = 1.0;
             }
@@ -373,7 +389,7 @@ class GameEngine {
                 const diff = dt - this.currentTime;
                 if (diff > 0 && diff < 6) {
                     const factor = 1 - diff / 6;
-                    base += factor * factor * 0.3; // weaker than real signals (0.3 < 0.5)
+                    base += factor * factor * 0.42; // close to real signals to prevent bar-color cheating
                 }
             }
         }
@@ -477,7 +493,7 @@ function initBgCanvas() {
             if (p.y > h) p.y = 0;
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(99, 102, 241, ${p.a})`;
+            ctx.fillStyle = `rgba(0, 199, 177, ${p.a})`;
             ctx.fill();
         }
         requestAnimationFrame(draw);
@@ -508,17 +524,17 @@ class AICommentary {
 
         if (intensity > 0.85) {
             const msgs = [
-                ['⚡ Нейросеть фиксирует предсобытийный паттерн — вероятность события ' + (78 + Math.floor(Math.random() * 17)) + '%', 'danger'],
-                ['📊 Сигнатура активности совпадает с предсобытийной моделью. Рекомендация: PREDICT', 'danger'],
-                ['🔥 Аномальный рост напряжения — ML-модель прогнозирует событие в ближайшие секунды', 'danger'],
+                ['⚡ Интенсивность на максимуме — событие вот-вот произойдёт!', 'danger'],
+                ['📊 Сигнатура активности совпадает с предсобытийным паттерном. Рекомендация: PREDICT', 'danger'],
+                ['🔥 Аномальный рост напряжения — событие в ближайшие секунды!', 'danger'],
             ];
             const pick = msgs[Math.floor(Math.random() * msgs.length)];
             comment = pick[0]; mood = pick[1];
             this.minInterval = 4;
         } else if (intensity > 0.55) {
             const msgs = [
-                ['📈 Индекс активности растёт. AI мониторит паттерны обеих команд', 'alert'],
-                ['🤖 Анализ: умеренное напряжение, вероятность события повышается', 'alert'],
+                ['📈 Индекс активности растёт. Следи за полосой интенсивности!', 'alert'],
+                ['🤖 Напряжение нарастает — вероятность события повышается', 'alert'],
                 ['🔍 Детектор событий в режиме повышенного внимания', 'alert'],
             ];
             const pick = msgs[Math.floor(Math.random() * msgs.length)];
@@ -536,24 +552,24 @@ class AICommentary {
                 const sportMsgs = {
                     football: [
                         ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
-                        ['🤖 CV-модель анализирует позиции игроков и траекторию мяча...', ''],
-                        [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
-                        ['🧠 Deep Learning анализирует динамику атаки и обороны...', ''],
+                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти?`, ''],
+                        ['🤖 Следи за атакующими комбинациями — они предвещают голы', ''],
+                        [`📊 Ваш текущий счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
+                        ['🧠 Внимание на штрафные и угловые — пиковые моменты!', ''],
                     ],
                     cs2: [
                         ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
-                        ['🤖 Модель анализирует экономику раундов и позиции игроков...', ''],
-                        [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
-                        ['🧠 ML-детектор отслеживает перестрелки и ротации...', ''],
+                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти?`, ''],
+                        ['🤖 Закупка раунда и позиции — ключ к предсказанию фрагов', ''],
+                        [`📊 Ваш текущий счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
+                        ['🧠 Перестрелки и ротации — следи за перемещениями!', ''],
                     ],
                     basketball: [
                         ['💡 Совет: полоса интенсивности начинает расти за 5-10 сек до события', ''],
-                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти нейросеть?`, ''],
-                        ['🤖 CV-модель трекает мяч и позиции игроков на площадке...', ''],
-                        [`📊 Ваш текущий счёт: ${score}. Точность выше среднего`, ''],
-                        ['🧠 ML-анализ: быстрый отрыв или позиционная атака?', ''],
+                        [`🏆 AI Predictor набрал ${aiScore} очков — сможешь обойти?`, ''],
+                        ['🤖 Быстрый отрыв или позиционная атака? Следи за темпом!', ''],
+                        [`📊 Ваш текущий счёт: ${score}. Найдено ${eventsFound}/${totalEvents} событий`, ''],
+                        ['🧠 Данки и трёхочковые — самые частые события в хайлайтах', ''],
                     ],
                 };
                 const general = sportMsgs[this.sport] || sportMsgs.football;
@@ -568,15 +584,14 @@ class AICommentary {
     }
 
     onEvent(event) {
-        const pct = 25 + Math.floor(Math.random() * 40);
-        return { text: `✅ ${event.label} — только ${pct}% игроков предсказали этот момент`, mood: 'success' };
+        return { text: `✅ ${event.label} — успел предсказать?`, mood: 'success' };
     }
 
     onPrediction(result) {
-        if (result.quality === 'perfect') return { text: '🎯 НЕВЕРОЯТНО! Точность < 0.5с — вы превзошли нейросеть!', mood: 'success' };
-        if (result.quality === 'excellent') return { text: '✨ Великолепная точность! Топ-8% среди всех игроков', mood: 'success' };
-        if (result.quality === 'great') return { text: '👏 Отличный тайминг! ML-модель фиксирует высокую точность', mood: 'success' };
-        if (result.quality === 'false') return { text: '❌ Ложное срабатывание. AI рекомендует: ждите роста интенсивности', mood: 'danger' };
+        if (result.quality === 'perfect') return { text: '🎯 НЕВЕРОЯТНО! Точность < 0.5 секунды!', mood: 'success' };
+        if (result.quality === 'excellent') return { text: '✨ Великолепная точность! Отличная реакция!', mood: 'success' };
+        if (result.quality === 'great') return { text: '👏 Отличный тайминг! Так держать!', mood: 'success' };
+        if (result.quality === 'false') return { text: '❌ Ложное срабатывание. Ждите роста интенсивности!', mood: 'danger' };
         return null;
     }
 }
@@ -640,6 +655,7 @@ class ClaudeCommentary {
             if (data.text && this._pushComment) {
                 this._pushComment({ text: '🧠 ' + data.text, mood: state.intensity > 0.7 ? 'alert' : '' });
                 this._suppressUntil = this._currentTime + 15; // show Claude comment for 15s
+                this.fetchInterval = 12; // restore interval after success
             }
         } catch {
             this.fetchInterval = 30;
@@ -847,7 +863,7 @@ class App {
     }
 
     // --- Countdown ---
-    _startCountdown(match) {
+    async _startCountdown(match) {
         // Clear any previous countdown
         if (this._countdownInterval) clearInterval(this._countdownInterval);
 
@@ -856,10 +872,28 @@ class App {
         const numEl = document.getElementById('cd-num');
         overlay.classList.remove('hidden');
 
+        // Fetch real events from API
+        numEl.textContent = '⏳';
+        numEl.style.color = 'var(--accent)';
+        numEl.style.animation = 'none';
+
+        try {
+            const resp = await fetch(`${EVENTS_API}/api/events/${match.id}`);
+            if (resp.ok) {
+                const data = await resp.json();
+                match.events = data.events;
+                if (data.duration) match.duration = data.duration;
+            } else {
+                match.events = FALLBACK_EVENTS[match.id] || [];
+            }
+        } catch {
+            match.events = FALLBACK_EVENTS[match.id] || [];
+        }
+
+        // Start countdown 3-2-1-GO
         let count = 3;
         numEl.textContent = count;
-        numEl.style.animation = 'none';
-        void numEl.offsetWidth;
+        numEl.style.color = '';
         numEl.style.animation = 'cdPop 0.7s ease-out';
         this.sound.countdown();
 
@@ -984,7 +1018,7 @@ class App {
             getScore: () => ({ a: this.engine.matchScoreA, b: this.engine.matchScoreB }),
             pushComment: (c) => this._setCommentary(c),
         });
-        this._setCommentary({ text: '🤖 Нейросеть инициализирована. Анализирую матч в реальном времени...', mood: '' });
+        this._setCommentary({ text: '🤖 AI-комментатор подключён. Следи за интенсивностью!', mood: '' });
 
         // Start AI simulation
         this.ai.simulateMatch(match.events);
@@ -1115,7 +1149,7 @@ class App {
         const scoreEl = popup.querySelector('.popup-score');
         const labelEl = popup.querySelector('.popup-label');
 
-        scoreEl.textContent = result.pts >= 0 ? `+${result.pts}` : result.pts;
+        scoreEl.textContent = result.pts > 0 ? `+${result.pts}` : result.pts;
         labelEl.textContent = result.label;
 
         popup.className = 'score-popup popup-' + result.quality;
@@ -1141,7 +1175,7 @@ class App {
         div.innerHTML = `
             <span class="pred-time">${timeStr}</span>
             <span>${result.label}</span>
-            <span class="pred-pts ${ptsColor}">${result.pts >= 0 ? '+' + result.pts : result.pts}</span>
+            <span class="pred-pts ${ptsColor}">${result.pts > 0 ? '+' + result.pts : result.pts}</span>
         `;
         list.prepend(div);
     }
@@ -1275,6 +1309,12 @@ class App {
         this.engine.isPlaying = false;
         this.engine.getVideoTime = null;
         clearInterval(this.engine.tickInterval);
+        // Clear countdown if still running
+        if (this._countdownInterval) {
+            clearInterval(this._countdownInterval);
+            this._countdownInterval = null;
+        }
+        document.getElementById('countdown-overlay').classList.add('hidden');
         if (this.ytPlayer && this.ytPlayer.destroy) {
             try { this.ytPlayer.destroy(); } catch {}
             this.ytPlayer = null;

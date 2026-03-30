@@ -8,7 +8,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -44,7 +44,7 @@
         </section>
 
         <!-- ===== NICKNAME MODAL ===== -->
-        <div id="modal-nickname" class="modal hidden">
+        <div id="modal-nickname" class="modal hidden" role="dialog" aria-modal="true" aria-label="Введите никнейм">
             <div class="modal-body">
                 <h2>Твой никнейм</h2>
                 <input type="text" id="input-nickname" class="input-text" placeholder="Введи ник..." maxlength="16" autocomplete="off" spellcheck="false">
@@ -79,10 +79,10 @@
                         <div class="demo-team team-b"><span class="team-name" id="tm-b"></span><span class="team-score" id="ts-b">0</span></div>
                     </div>
                     <div class="demo-clock" id="demo-clock">0'</div>
-                    <div class="event-feed" id="event-feed"></div>
-                    <div class="demo-event-flash" id="event-flash"></div>
                 </div>
                 <div id="yt-container" class="yt-container hidden"></div>
+                <div class="event-feed" id="event-feed"></div>
+                <div class="demo-event-flash" id="event-flash"></div>
                 <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
             </div>
 
