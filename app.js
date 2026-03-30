@@ -45,80 +45,81 @@ const MATCHES = [
         id: 'wc2022-final',
         sport: 'football',
         title: 'ЧМ 2022 — Финал',
-        desc: 'Аргентина vs Франция. Смотри видео и предсказывай голы!',
-        duration: 1050, // ~17.5 min of video (up to 2-2 + extra time start)
+        desc: 'Камбэк Мбаппе! Два гола за минуту!',
+        duration: 90,
         badge: 'live',
         teamA: '🇦🇷 Аргентина',
         teamB: '🇫🇷 Франция',
         videoId: 'DDWYR9Oi_wI',
-        videoStart: 40, // skip intro
+        videoStart: 625, // Mbappe comeback segment (YT ~10:25)
         events: [
-            // Calibrated via Playwright video scan 2026-03-29
-            // Video: DDWYR9Oi_wI (Football Flow, 27:25), videoStart=40
-            // game_time = video_seconds - 40
-            { time: 100, type: 'foul', label: 'Опасный фол у штрафной' },
-            { time: 185, type: 'foul', label: 'Фол Демберле на Ди Марии!' },
-            { time: 195, type: 'penalty', label: 'ПЕНАЛЬТИ! Фол в штрафной!' },
-            { time: 206, type: 'goal', label: 'ГОЛ! Месси (пен.) — 1:0!', scoreA: 1 },
-            { time: 305, type: 'goal', label: 'ГОЛ! Ди Мария — комбинация! 2:0!', scoreA: 1 },
-            { time: 420, type: 'foul', label: 'Жёсткий фол Отаменди' },
-            { time: 530, type: 'corner', label: 'Угловой — подача Гризманна' },
-            { time: 618, type: 'goal', label: 'ГОЛ! Мбаппе — удар! 2:1!', scoreB: 1 },
-            { time: 633, type: 'goal', label: 'ГОЛ! Мбаппе (пен.) — 2:2!!', scoreB: 1 },
-            { time: 985, type: 'goal', label: 'ГОЛ! Месси — 3:2! Экстра-тайм!', scoreA: 1 },
+            // Hand-verified from transcript. YT times - 625, adjusted -1.5s for commentator delay
+            // Score entering segment: Argentina 2:0 France
+            { time: 5, type: 'foul', label: 'ФОЛ! Тюрам сбит у штрафной!' },
+            { time: 9, type: 'penalty', label: 'ПЕНАЛЬТИ! Судья указывает на точку!' },
+            { time: 17, type: 'foul', label: 'Мбаппе готовится к удару!' },
+            { time: 28, type: 'goal', label: 'ГОЛ! Мбаппе с пенальти — 2:1!', scoreB: 1 },
+            { time: 43, type: 'corner', label: 'Подача! Франция атакует!' },
+            { time: 51, type: 'goal', label: 'ГОЛ! Мбаппе залп в угол — 2:2!!', scoreB: 1 },
+            { time: 61, type: 'foul', label: 'Фол! Кома останавливает атаку!' },
+            { time: 75, type: 'corner', label: 'Угловой! Франция давит!' },
+            { time: 84, type: 'foul', label: 'Аргентина в панике! Жёсткий фол!' },
         ],
     },
     {
         id: 'cs2-highlights',
         sport: 'cs2',
         title: 'CS2 Major — Гранд-финал',
-        desc: 'Vitality vs TheMongolz. Смотри и предсказывай моменты!',
-        duration: 500, // ~8.3 min of action
+        desc: 'Vitality vs TheMongolz. 2 раунда!',
+        duration: 90,
         badge: 'live',
         teamA: '🟡 Vitality',
         teamB: '🔴 TheMongolz',
         videoId: '2GeYxpuibiE',
-        videoStart: 240, // skip intro, start at round action (4:00)
+        videoStart: 269, // Round action start (YT ~4:29)
         events: [
-            // REAL timestamps from BLAST Austin Major 2025 transcript
-            // videoStart=240 (4:00), times relative to playback start
-            { time: 29, type: 'headshot', label: 'ХЕДШОТ! Flamesy снимает Techno!' },
-            { time: 35, type: 'kill', label: 'Ответный фраг! Второй падает!' },
-            { time: 52, type: 'clutch', label: 'КЛАТЧ 1v2! 910 затащил раунд!' },
-            { time: 75, type: 'bomb', label: 'Бомба заложена! A-сайт под атакой!' },
-            { time: 113, type: 'headshot', label: 'Wall-bang! Techno пробивает стену!' },
-            { time: 234, type: 'kill', label: '910 снимает Mezi! Важный фраг!' },
-            { time: 278, type: 'kill', label: 'Мульти-килл! TheMongolz давят!' },
-            { time: 303, type: 'kill', label: 'Flamesy забирает трейд!' },
-            { time: 396, type: 'headshot', label: 'Голову сносит! Mzenho мульти-килл!' },
-            { time: 407, type: 'ace', label: 'ACE! Flamesy закрывает раунд!' },
-            { time: 460, type: 'clutch', label: 'КЛАТЧ 1v1! Techno в зоне! Раунд!' },
+            // From BLAST Austin Major 2025 transcript, times = YT - 269, adjusted -1.5s
+            // Round 1: TheMongolz attack A site
+            { time: 0, type: 'kill', label: 'Flamesy открывает! Techno падает!' },
+            { time: 5, type: 'kill', label: '910 находит щель! Фраг!' },
+            { time: 14, type: 'kill', label: 'Senzu выравнивает! Трейд!' },
+            { time: 16, type: 'kill', label: '2v2! Обмен фрагами!' },
+            { time: 24, type: 'clutch', label: 'КЛАТЧ! 910 один против двоих!' },
+            { time: 45, type: 'bomb', label: 'Бомба заложена на A!' },
+            { time: 50, type: 'kill', label: 'Robs лезет на плент! Фраг!' },
+            { time: 56, type: 'kill', label: 'Robs знает как побеждать!' },
+            // Round 2: Vitality retake
+            { time: 75, type: 'kill', label: 'Apex побеждает в дуэли!' },
+            { time: 80, type: 'kill', label: 'Тайминг через коннектор!' },
+            { time: 85, type: 'headshot', label: 'WALLBANG! Techno через стену!' },
+            { time: 88, type: 'kill', label: 'Vitality закрывают раунд!' },
         ],
     },
     {
         id: 'nba-finals-2024',
         sport: 'basketball',
         title: 'NBA Finals 2024 — Game 5',
-        desc: 'Celtics — чемпионы! Смотри хайлайты и предсказывай!',
-        duration: 570, // ~9.5 min
+        desc: 'Celtics чемпионы! Финальный рывок!',
+        duration: 90,
         badge: 'live',
         teamA: '🟢 Celtics',
         teamB: '🔵 Mavericks',
         videoId: '17MO0XFSPTk',
-        videoStart: 5, // skip intro card
+        videoStart: 410, // Late-game action (YT ~6:50)
         events: [
-            // NBA Finals 2024 Game 5 highlights (FreeDawkins, 9:59)
-            // Celtics 106-88 Mavericks — championship clincher
-            { time: 25, type: 'three', label: '3-очковый! Tatum открывает счёт!' },
-            { time: 78, type: 'dunk', label: 'ДАНК! Brown в проходе! Мощь!' },
-            { time: 148, type: 'block', label: 'БЛОК! На кольце! Defensive stand!' },
-            { time: 205, type: 'three', label: '3-очковый! Holiday с дистанции!' },
-            { time: 282, type: 'steal', label: 'Перехват! Быстрый отрыв Celtics!' },
-            { time: 340, type: 'dunk', label: 'ДАНК! Brown через защитника!' },
-            { time: 398, type: 'three', label: '3-очковый! Ответный удар Dallas!' },
-            { time: 453, type: 'block', label: 'БЛОК! Tatum отбивает на кольце!' },
-            { time: 510, type: 'dunk', label: 'Poster ДАНК! Через Lively!' },
-            { time: 555, type: 'three', label: 'ЧЕМПИОНСКИЙ 3-очковый! CELTICS!' },
+            // From FreeDawkins transcript, times = YT - 410, adjusted -1.5s
+            // Diverse action: blocks, steals, threes, dunks
+            { time: 4, type: 'dunk', label: 'Дончич забивает через контакт!' },
+            { time: 11, type: 'block', label: 'БЛОК! White накрывает на кольце!' },
+            { time: 25, type: 'three', label: '3-очковый! Дончич с дистанции!' },
+            { time: 31, type: 'three', label: 'White отвечает трёхочковым!' },
+            { time: 40, type: 'dunk', label: 'Дончич в проходе! Финиш!' },
+            { time: 47, type: 'three', label: 'Tatum банк-шот плюс фол!' },
+            { time: 53, type: 'three', label: 'Irving попадает трёхочковый!' },
+            { time: 60, type: 'dunk', label: 'Tatum крутит и забивает!' },
+            { time: 66, type: 'three', label: 'Дончич не сдаётся! Тройка!' },
+            { time: 78, type: 'steal', label: 'ПЕРЕХВАТ! White крадёт мяч!' },
+            { time: 82, type: 'dunk', label: 'Tatum в отрыв! Финишер!' },
         ],
     },
 ];
