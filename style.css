@@ -512,7 +512,7 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
 .intensity-fill.medium { background: linear-gradient(90deg, var(--warning), #f97316); }
 .intensity-fill.high {
     background: linear-gradient(90deg, #f97316, var(--danger));
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 16px rgba(204, 91, 90, 0.5);
     animation: intensityPulse 0.6s ease-in-out infinite;
 }
 
@@ -525,8 +525,8 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
     max-width: 800px;
     margin-top: 10px;
     padding: 10px 16px;
-    background: rgba(99, 102, 241, 0.06);
-    border: 1px solid rgba(99, 102, 241, 0.12);
+    background: rgba(0, 199, 177, 0.05);
+    border: 1px solid rgba(0, 199, 177, 0.12);
     border-radius: var(--radius-sm);
     font-size: 0.82rem;
     color: var(--text);
@@ -537,7 +537,7 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
 .ai-badge {
     padding: 3px 10px;
     border-radius: 6px;
-    background: linear-gradient(135deg, var(--primary), #4f46e5);
+    background: linear-gradient(135deg, var(--primary), #009E8E);
     color: #fff;
     font-size: 0.65rem;
     font-weight: 700;
