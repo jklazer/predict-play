@@ -1,0 +1,61 @@
+{
+  "matchId": "wc2022-final",
+  "sport": "football",
+  "videoId": "DDWYR9Oi_wI",
+  "videoStart": 625,
+  "duration": 90,
+  "title": "ЧМ 2022 — Финал",
+  "teamA": "🇦🇷 Аргентина",
+  "teamB": "🇫🇷 Франция",
+  "extractedAt": "2026-03-30",
+  "events": [
+    {
+      "time": 5,
+      "type": "foul",
+      "label": "ФОЛ! Тюрам сбит у штрафной!"
+    },
+    {
+      "time": 9,
+      "type": "penalty",
+      "label": "ПЕНАЛЬТИ! Судья указывает на точку!"
+    },
+    {
+      "time": 17,
+      "type": "foul",
+      "label": "Мбаппе готовится к удару!"
+    },
+    {
+      "time": 28,
+      "type": "goal",
+      "label": "ГОЛ! Мбаппе с пенальти — 2:1!",
+      "scoreB": 1
+    },
+    {
+      "time": 43,
+      "type": "corner",
+      "label": "Подача! Франция атакует!"
+    },
+    {
+      "time": 51,
+      "type": "goal",
+      "label": "ГОЛ! Мбаппе залп в угол — 2:2!!",
+      "scoreB": 1
+    },
+    {
+      "time": 61,
+      "type": "foul",
+      "label": "Фол! Кома останавливает атаку!"
+    },
+    {
+      "time": 75,
+      "type": "corner",
+      "label": "Угловой! Франция давит!"
+    },
+    {
+      "time": 84,
+      "type": "foul",
+      "label": "Аргентина в панике! Жёсткий фол!"
+    }
+  ],
+  "eventCount": 9
+}

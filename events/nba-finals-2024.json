@@ -1,0 +1,69 @@
+{
+  "matchId": "nba-finals-2024",
+  "sport": "basketball",
+  "videoId": "17MO0XFSPTk",
+  "videoStart": 410,
+  "duration": 90,
+  "title": "NBA Finals 2024 — Game 5",
+  "teamA": "🟢 Celtics",
+  "teamB": "🔵 Mavericks",
+  "extractedAt": "2026-03-30",
+  "events": [
+    {
+      "time": 4,
+      "type": "dunk",
+      "label": "Дончич забивает через контакт!"
+    },
+    {
+      "time": 11,
+      "type": "block",
+      "label": "БЛОК! White накрывает на кольце!"
+    },
+    {
+      "time": 25,
+      "type": "three",
+      "label": "3-очковый! Дончич с дистанции!"
+    },
+    {
+      "time": 31,
+      "type": "three",
+      "label": "White отвечает трёхочковым!"
+    },
+    {
+      "time": 40,
+      "type": "dunk",
+      "label": "Дончич в проходе! Финиш!"
+    },
+    {
+      "time": 47,
+      "type": "three",
+      "label": "Tatum банк-шот плюс фол!"
+    },
+    {
+      "time": 53,
+      "type": "three",
+      "label": "Irving попадает трёхочковый!"
+    },
+    {
+      "time": 60,
+      "type": "dunk",
+      "label": "Tatum крутит и забивает!"
+    },
+    {
+      "time": 66,
+      "type": "three",
+      "label": "Дончич не сдаётся! Тройка!"
+    },
+    {
+      "time": 78,
+      "type": "steal",
+      "label": "ПЕРЕХВАТ! White крадёт мяч!"
+    },
+    {
+      "time": 82,
+      "type": "dunk",
+      "label": "Tatum в отрыв! Финишер!"
+    }
+  ],
+  "eventCount": 11
+}

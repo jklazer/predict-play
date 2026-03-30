@@ -1,0 +1,74 @@
+{
+  "matchId": "cs2-highlights",
+  "sport": "cs2",
+  "videoId": "2GeYxpuibiE",
+  "videoStart": 269,
+  "duration": 90,
+  "title": "CS2 Major — Гранд-финал",
+  "teamA": "🟡 Vitality",
+  "teamB": "🔴 TheMongolz",
+  "extractedAt": "2026-03-30",
+  "events": [
+    {
+      "time": 0,
+      "type": "kill",
+      "label": "Flamesy открывает! Techno падает!"
+    },
+    {
+      "time": 5,
+      "type": "kill",
+      "label": "910 находит щель! Фраг!"
+    },
+    {
+      "time": 14,
+      "type": "kill",
+      "label": "Senzu выравнивает! Трейд!"
+    },
+    {
+      "time": 16,
+      "type": "kill",
+      "label": "2v2! Обмен фрагами!"
+    },
+    {
+      "time": 24,
+      "type": "clutch",
+      "label": "КЛАТЧ! 910 один против двоих!"
+    },
+    {
+      "time": 45,
+      "type": "bomb",
+      "label": "Бомба заложена на A!"
+    },
+    {
+      "time": 50,
+      "type": "kill",
+      "label": "Robs лезет на плент! Фраг!"
+    },
+    {
+      "time": 56,
+      "type": "kill",
+      "label": "Robs знает как побеждать!"
+    },
+    {
+      "time": 75,
+      "type": "kill",
+      "label": "Apex побеждает в дуэли!"
+    },
+    {
+      "time": 80,
+      "type": "kill",
+      "label": "Тайминг через коннектор!"
+    },
+    {
+      "time": 85,
+      "type": "headshot",
+      "label": "WALLBANG! Techno через стену!"
+    },
+    {
+      "time": 88,
+      "type": "kill",
+      "label": "Vitality закрывают раунд!"
+    }
+  ],
+  "eventCount": 12
+}
