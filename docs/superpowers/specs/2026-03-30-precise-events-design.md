@@ -98,12 +98,77 @@
 
 Не меняем ClaudeCommentary (GPT-4o-mini). Но events теперь точные → комментарии будут срабатывать в правильные моменты.
 
-## Что НЕ меняется
+## UI Redesign — стиль live-ставок (PARI / Fonbet)
+
+Текущий дизайн выглядит как геймерский прототип. Нужен вид **профессиональной букмекерской платформы** — узнаваемый, доверительный, live-feel.
+
+### Цветовая палитра
+
+| Роль | Цвет | Hex |
+|------|-------|-----|
+| Background (body) | Тёмный графит | `#111117` |
+| Surface (cards) | Чуть светлее | `#1A1A24` |
+| Header | Чёрный | `#0D0D12` |
+| Primary accent (CTA, predict) | PARI teal | `#00C7B1` |
+| Live indicator | Зелёный | `#4ABA24` |
+| Danger / miss | Красный | `#CC5B5A` |
+| Success / hit | Teal bright | `#00E6CC` |
+| Text primary | Белый | `#F0F0F5` |
+| Text secondary | Серый | `#8890A0` |
+| Odds/event cells | Полупрозрачный серый | `rgba(255,255,255,0.06)` |
+
+### Шрифт
+
+Montserrat (600/700 для заголовков, 400/500 для контента). Числа (score, timer, points) — tabular-nums, bold.
+
+### Ключевые UI-компоненты
+
+**1. Match Card (выбор матча)**
+- Тёмная карточка с лого/эмблемами команд
+- Счёт крупно по центру (если live)
+- Зелёный пульсирующий dot + "LIVE" badge
+- Внизу: количество доступных предиктов (напр. "12 событий")
+- Hover: subtle border glow teal
+
+**2. Game Screen (во время матча)**
+- Видео занимает ~60% ширины сверху
+- Под видео: панель predict-кнопок (стиль odds cells)
+  - Каждая кнопка = тип события (HEADSHOT, KILL, BOMB, etc.)
+  - Фон: `rgba(255,255,255,0.06)`, border-radius: 6px
+  - Hover: teal border, slight scale
+  - Active/selected: teal background, white text
+- Справа от видео или под кнопками: live-лента событий (как bet history)
+- Score display: крупный, между лого команд, обновляется в реальном времени
+
+**3. Live Event Feed**
+- Вертикальный список последних событий (снизу вверх)
+- Каждое: timestamp + type badge + label
+- Новые события появляются с slide-in анимацией
+- Hit predictions подсвечиваются teal, miss — красным
+
+**4. Intensity Bar**
+- Горизонтальная полоса под видео
+- Gradient от `#1A1A24` (спокойно) → `#00C7B1` (интенсивно)
+- Пульсирует ярче когда приближается событие
+
+**5. Results / Scoreboard**
+- Таблица в стиле leaderboard: позиция, ник, очки, accuracy %
+- Зелёные/красные badges для hit/miss ratio
+- AI-бот отображается как обычный участник
+
+### Анимации
+
+- **Predict hit**: teal flash + "+XX points" fly-up
+- **Predict miss**: red flash + shake
+- **Event fire**: pulse ripple от score display
+- **Live dot**: CSS pulsing animation (green glow)
+- **Odds cell press**: scale(0.96) → scale(1) bounce
+
+### Что НЕ меняется (логика)
 
 - GameEngine, predict(), scoring tiers (PERFECT/EXCELLENT/GREAT/GOOD/OK)
 - YouTube IFrame API интеграция
-- Leaderboard, UI/CSS, HTML
-- AI commentary класс (ClaudeCommentary/AICommentary)
+- AI commentary класс (GPT-4o-mini backend)
 - Серверная инфраструктура (FastAPI, Caddy, HTTPS)
 - Endpoint /api/events/{matchId} — тот же формат
 
@@ -114,3 +179,5 @@
 3. **Intensity bar** — пики совпадают с реальным action на видео
 4. **AI commentary** — срабатывает на правильных моментах
 5. **Нет ложных предиктов** — predict "headshot" → на экране headshot, не что-то другое
+6. **UI** — выглядит как профессиональная live-betting платформа (PARI-стиль)
+7. **90с сегменты** — каждый матч ~90с, плотный action, все 3 спорта работают
