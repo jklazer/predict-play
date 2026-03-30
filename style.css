@@ -99,7 +99,7 @@ h4 { font-weight: 600; font-size: 0.85rem; color: var(--text-dim); text-transfor
     color: #fff;
     box-shadow: 0 0 20px var(--primary-glow);
 }
-.btn-primary:hover { background: #818cf8; box-shadow: 0 0 30px var(--primary-glow); transform: translateY(-1px); }
+.btn-primary:hover { background: #00D4BE; box-shadow: 0 0 30px var(--primary-glow); transform: translateY(-1px); }
 .btn-secondary {
     background: var(--surface);
     color: var(--text);
